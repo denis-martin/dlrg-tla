@@ -1,0 +1,148 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">{{modalTitle}}</h3>
+	<div style="float: right">
+		<button class="btn" type="button" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span></button>
+	</div>
+</div>
+<div class="modal-body" id="modal-body">
+
+<form>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-3">
+			<label for="lastName">Nachname</label>
+			<input type="text" class="form-control" id="lastName" ng-model="participant.data.lastName">
+		</div>
+		<div class="col-md-3">
+			<label for="firstName">Vorname</label>
+			<input type="text" class="form-control" id="firstName" ng-model="participant.data.firstName">
+		</div>
+		<div class="col-md-2">
+			<label for="sex">Geschlecht</label>
+			<select id="sex" class="form-control" ng-model="participant.data.sex">
+				<option value="m">männlich</option>
+				<option value="w">weiblich</option>
+			</select>
+		</div>
+		<div class="col-md-3">
+			<label for="birthdate">Geburtsdatum</label>
+			<input type="date" class="form-control" id="birthdate" max="9999-12-31"
+				ng-model="participant.getSetBirthdate" ng-model-options="{ getterSetter: true, timezone: 'UTC' }">
+		</div>
+		<div class="col-md-1">
+			<label>Alter</label><br>
+			<div class="paddedText">{{participant.getAge()}}</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<label for="street">Straße</label>
+			<input type="text" class="form-control" id="street" ng-model="participant.data.street">
+		</div>
+		<div class="col-md-2">
+			<label for="zipCode">PLZ</label>
+			<input type="text" class="form-control" id="zipCode" ng-model="participant.data.zipCode">
+		</div>
+		<div class="col-md-4">
+			<label for="city">Ort</label>
+			<input type="text" class="form-control" id="city" ng-model="participant.data.city">
+		</div>
+		<div class="col-md-2">
+			<label for="dressSize">Kleidergröße</label>
+			<input type="text" class="form-control" id="dressSize" ng-model="participant.data.dressSize">
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-3">
+			<label for="phone">Telefon</label>
+			<input type="text" class="form-control" id="phone" ng-model="participant.data.phone">
+		</div>
+		<div class="col-md-3">
+			<label for="phoneWork">Telefon geschäftlich</label>
+			<input type="text" class="form-control" id="phoneWork" ng-model="participant.data.phoneWork">
+		</div>
+		<div class="col-md-3">
+			<label for="phoneMobile">Telefon mobil</label>
+			<input type="text" class="form-control" id="phoneMobile" ng-model="participant.data.phoneMobile">
+		</div>
+		<div class="col-md-3">
+			<label for="email">E-Mail-Adresse(n)</label>
+			<input type="text" class="form-control" id="email" ng-model="participant.data.email">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<label for="altContact">Alternativer Kontakt (z.B. Eltern)</label>
+			<input type="text" class="form-control" id="altContact" ng-model="participant.data.altContact">
+		</div>
+		<div class="col-md-4">
+			<label for="altEmail">Alternative E-Mail-Adresse(n)</label>
+			<input type="text" class="form-control" id="altEmail" ng-model="participant.data.altEmail">
+		</div>
+		<div class="col-md-4">
+			<label for="relationId">Verwandschaft</label>
+			<select id="relationId" class="form-control" ng-model="participant.data.relationId">
+				<option ng-repeat="p in DlrgTla.db.participants | orderBy:'data.lastName'" ng-value="p.id">
+					{{p.data.lastName}}, {{p.data.firstName}} ({{p.getAge()}} J.)
+				</option>
+			</select>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-6">
+			<label for="health">Gesundheitszustand (ggfs. mit Datum)</label>
+			<input type="text" class="form-control" id="health" ng-model="participant.data.health">
+		</div>
+		<div class="col-md-6">
+			<label for="emergencyContact">Notfallkontakt/-rufnummer</label>
+			<input type="text" class="form-control" id="emergencyContact" ng-model="participant.data.emergencyContact">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label for="membership">Mitgliedschaft</label>
+			<select id="membership" class="form-control" ng-model="participant.data.membership" convert-to-number>
+				<option value="0">(noch) nicht notwendig</option>
+				<option value="1">notwendig</option>
+			</select>
+		</div>
+		<div class="col-md-5">
+			<label for="memberId">Mitglied</label>
+			<select id="memberId" class="form-control">
+				<option value="0">(todo)</option>
+			</select>
+		</div>
+		<div class="col-md-2">
+			<label>Eintritt</label><br>
+			<div class="paddedText">(todo)</div>
+		</div>
+		<div class="col-md-2">
+			<label>Austritt</label><br>
+			<div class="paddedText">(todo)</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<label for="phone">Notizen</label>
+			<textarea class="form-control" id="phone" ng-model="participant.data.notes"></textarea>
+		</div>
+	</div>
+</div>
+
+</form>
+
+</div>
+<div class="modal-footer">
+	<div style="float: left">
+		<button ng-if="participant.id" class="btn btn-danger" type="button" ng-click="delete()">Löschen</button>
+	</div>
+	<span ng-if="DlrgTla.thinking"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></span>
+	<span ng-if="commitFailed" style="color: red"><span class="glyphicon glyphicon-remove"></span> Fehlgeschlagen</span>
+    <button class="btn btn-primary" type="button" ng-click="ok()">Speichern</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+</div>

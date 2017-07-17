@@ -1,0 +1,63 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<!--span class="glyphicon glyphicon-bullhorn"></span> Kurse-->
+		<a href="#" ng-click="DlrgTla.uiEditCourse()"><span class="glyphicon glyphicon-file"></span> Neuer Kurs</a>&nbsp;&nbsp;
+		<a href="#" ng-show="cr" ng-click="DlrgTla.uiEditCourse(cr)">
+			<span class="glyphicon glyphicon-pencil"></span> Kurs bearbeiten
+		</a>
+		<div style="float: right">
+			<a href="#" ng-show="cr" ng-click="DlrgTla.uiEditCourseParticipant(null, cr.id, null)">
+				<span class="glyphicon glyphicon-file"></span> Neuer Kursteilnehmer</a>&nbsp;&nbsp;
+			<a href="#" ng-show="crCp" ng-click="DlrgTla.uiEditCourseParticipant(crCp, cr ? cr.id : null, null)">
+				<span class="glyphicon glyphicon-pencil"></span> Kursteilnehmer bearbeiten
+			</a>
+		</div>
+	</div>
+	<div class="panel-body container" >
+		<div class="row">
+			<div class="col-sm-5">
+				<div ui-grid="gridOptions" ui-grid-selection class="dlrgtlaGrid coursesGrid"></div>
+			</div>
+			<div class="col-sm-7">
+				<div ui-grid="gridOptionsCp" ui-grid-selection class="dlrgtlaGrid courseparticipantsGrid"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3">
+				<span class="fieldLabel">Kurs</span><br>
+				<a href="#" ng-show="cr" ng-click="DlrgTla.uiEditCourse(cr)">{{cr.name}}</a><span ng-if="cr.ctId"> ({{cr.ctId | dbfield:"coursetypes":"name"}})</span><br>
+				<span ng-if="cr.begin">{{cr.begin | date:"dd.MM.yyyy"}}</span><span ng-if="cr.end"> bis {{cr.end | date:"dd.MM.yyyy"}}</span></span>
+			</div>
+			<div class="col-sm-2">
+				<span class="fieldLabel">Kursgebühren</span><br>
+				<span ng-if="cr.charge">{{cr.charge}} €</span><span ng-if="cr.chargeNonMember"> ({{cr.chargeNonMember}} €)</span><br>
+				<span ng-if="cr.seasonPass===1">Saisonkarte</span><span ng-if="cr.seasonPass===0">Kurskarte</span>
+			</div>
+			<div class="col-sm-3">
+				<span class="fieldLabel">{{crCp.instructor ? "Ausbilder" : "Teilnehmer"}}</span><br>
+				<span ng-if="getParticipant().data.lastName || getParticipant().data.firstName">
+					<a href="#" ng-click="DlrgTla.uiEditParticipant(getParticipant())">{{getParticipant().data.lastName}}, {{getParticipant().data.firstName}}</a><br>
+				</span>
+				<span ng-if="getParticipant().data.membership===0">Mitgliedschaft (noch) nicht notwendig</span>
+				<span ng-if="getParticipant().data.membership===1">Mitgliedschaft notwendig</span>
+			</div>
+			<div class="col-sm-2">
+				<span class="fieldLabel">Teilnehmergebühren</span><br>
+				<span ng-if="crCp.charge">{{crCp.charge}} €</span><span ng-if="crCp.familyDiscount"> (Familienrabatt)</span><br>
+				<span ng-if="crCp.data.chargePayedAt">bezahlt am {{crCp.data.chargePayedAt | date:"dd.MM.yyyy"}}</span>
+			</div>
+			<div class="col-sm-2">
+				<span class="fieldLabel">Status</span><br>
+				<span ng-if="crCp.status != null">{{DlrgTla.courseStatus[crCp.status]}}</span><br>
+				<span ng-if="crCp.passSent===1">Ü/K-Karte versandt</span>
+				<span ng-if="crCp.passSent===0">Ü/K-Karte nicht versandt</span>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer" ng-ig="isActive()">
+		{{gridApi.core.getVisibleRows(gridApi.grid).length}} Kurse,
+		{{gridApiCp.core.getVisibleRows(gridApiCp.grid).length}} Teilnehmer &mdash;
+		<a href="mailto:ausbildung@ettlingen.dlrg.de?subject=Kursinformation&amp;bcc={{getMailAdresses()}}">E-Mail an diese Teilnehmer</a>
+		(ohne Ausbilder)
+	</div>
+</div>

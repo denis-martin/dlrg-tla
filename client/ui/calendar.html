@@ -1,0 +1,67 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<span class="glyphicon glyphicon-calendar"></span> Kalender
+		<div style="float: right">
+			{{DlrgTla.getSeason().name}}
+		</div>
+	</div>
+	<div class="panel-body container">
+		<div class="row">
+			<div class="col-sm-5" style="text-align: center">
+				<h4>Übungsabende</h4>
+				<hr>
+				<div class="row" style="text-align: left">
+					<div class="col-sm-6">
+						<p>1. Saison-Hälfte</p>
+						<ol style="padding-left: 20px">
+							<li ng-repeat="d in DlrgTla.getSeason().getDays1()">
+								<span ng-class="{ 'datePast': compareDateToNow(d.date)<0, 'noTraining': !d.training }">
+									{{d.date | date:"dd.MM.yyyy"}}</span>
+								<span ng-if="d.desc" class="narrow">
+									<a href="#" ng-click="DlrgTla.uiEditSeasonDay(d)">{{d.desc}}</a></span>
+								<span ng-if="!d.desc"class="small">
+									<a href="#" ng-click="DlrgTla.uiEditSeasonDay(d)"><span class="glyphicon glyphicon-pencil"></span></a>
+								</span>
+							</li>
+						</ol>
+					</div>
+					<div class="col-sm-6">
+						<p>2. Saison-Hälfte</p>
+						<ol style="padding-left: 20px">
+							<li ng-repeat="d in DlrgTla.getSeason().getDays2()">
+								<span ng-class="{ 'datePast': compareDateToNow(d.date)<0, 'noTraining': !d.training }">
+									{{d.date | date:"dd.MM.yyyy"}}</span>
+								<span ng-if="d.desc" class="narrow">
+									<a href="#" ng-click="DlrgTla.uiEditSeasonDay(d)">{{d.desc}}</a></span>
+								<span ng-if="!d.desc"class="small">
+									<a href="#" ng-click="DlrgTla.uiEditSeasonDay(d)"><span class="glyphicon glyphicon-pencil"></span></a>
+								</span>
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-7">
+				<div calendar="calendar" class="calendar" ui-calendar="calendarConfig" ng-model="eventSources"></div>
+
+				<div class="row">
+					<div class="col-sm-4">
+						<input type="checkbox" id="showHolidays" ng-model="show.feiertage" ng-click="setVisibility('feiertage')">
+						<label for="showHolidays">Feiertage</label><br>
+
+						<input type="checkbox" id="showVacations" ng-model="show.ferienbw"  ng-click="setVisibility('ferienbw')" title="ohne bewegliche Ferientage">
+						<label for="showVacations" title="ohne bewegliche Ferientage">Schulferien (BW)</label>
+					</div>
+
+					<div class="col-sm-4">
+						<input type="checkbox" id="showDlrgEttlingen" ng-model="show.dlrgettlingen" ng-click="setVisibility('dlrgettlingen')">
+						<label for="showDlrgEttlingen">Ortsgruppen Kalender</label><br>
+
+						<input type="checkbox" id="showBirthdates" ng-model="show.birthdates" ng-click="setVisibility('birthdates')" title="nur Kursteilnehmer in dieser Saison">
+						<label for="showBirthdates" title="nur Kursteilnehmer in dieser Saison">Geburtstage</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,183 @@
+body {
+	padding: 5px;
+}
+
+input[type="checkbox"] {
+    vertical-align: text-bottom;
+}
+
+.logo {
+	background-image: url("../img/dlrg-logo.svg");
+	background-size: 60px 42px;
+	background-repeat: no-repeat;
+	height: 42px;
+	width: 60px;
+	margin: 4px 4px 0px -10px;
+}
+
+.thinking {
+	position: absolute;
+	float: left;
+	width: 50%;
+	left: 0;
+	right: 0;
+	top: 0;
+	margin-left: auto;
+	margin-right: auto;
+	z-index: 100;
+	border: 1px solid lightgray;
+	background-color: lightyellow;
+	border-radius: 4px;
+	font-size: 90%;
+	padding: 2px 4px 2px 4px;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+label {
+	font-size: 80%;
+}
+
+.panel {
+	font-size: 10pt;
+}
+
+.panel-footer {
+	font-size: 80%;
+	padding: 4px 8px 4px 8px;
+}
+
+.panel-heading a {
+	color: white;
+}
+
+.panel-heading a:hover {
+	text-decoration: none;
+}
+
+.panel-body {
+	padding: 0;
+}
+
+.dlrgtlaGrid {
+	width: 100%;
+	height: 400px;
+	font-size: 80%;
+}
+
+.participantsGrid {
+	height: 250px;
+}
+
+.coursesGrid {
+	height: 350px;
+}
+
+.courseparticipantsGrid {
+	height: 350px;
+}
+
+.container {
+	width: 100%;
+}
+
+.container .row {
+	margin: 5pt 0 5pt 0;
+}
+
+.col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, 
+.col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, 
+.col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.fieldLabel {
+	color: darkgray;
+	font-size: 75%;
+	margin-top: 5px;
+}
+
+@media (min-width: 768px) { 
+	.container .row .col-sm-half {
+		width: 4.166%;
+	}
+
+	.fieldLabel {
+		padding: 3px 0 4px 0;
+		text-align: right;
+		margin-top: 0;
+	}
+}
+
+.paddedText {
+	margin-top: 7px;
+}
+
+input.ui-grid-filter-input[type="text"] {
+    font-size: 120%;
+	font-weight: normal;
+	color: #00a;
+}
+
+select.ui-grid-filter-select {
+    font-size: 120%;
+	font-weight: normal;
+	color: #00a;
+}
+
+.modal-header h3 {
+	display: inline;
+}
+
+.modal-header .btn {
+	background-color: #fff;
+}
+
+.ui-grid-header-cell {
+	float: left;
+}
+
+.smallText {
+	font-size: 80%;
+}
+
+.caldlrgettlingen {
+	border-color: #335588;
+	background-color: #335588;
+}
+
+.calfeiertage {
+	border-color: #995533;
+	background-color: #995533;
+}
+
+.calferienbw {
+	border-color: #997733;
+	background-color: #997733;
+}
+
+.datePast {
+	color: lightgray;
+}
+
+.noTraining {
+	text-decoration: line-through;
+}
+
+.narrow {
+	font-family: Arial Narrow;
+}

@@ -1,0 +1,9 @@
+{
+  "name": "dlrg-tla-client",
+  "main": "index.html",
+  "window": {
+    "title": "DLRG OG Ettlingen e.V. - TLA Datenbank",
+    "width": 1100,
+    "height": 800
+  }
+}

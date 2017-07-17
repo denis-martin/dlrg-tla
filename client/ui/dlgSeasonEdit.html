@@ -1,0 +1,54 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">{{modalTitle}}</h3>
+	<div style="float: right">
+		<button class="btn" type="button" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span></button>
+	</div>
+</div>
+<div class="modal-body" id="modal-body">
+
+<form>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6">
+			<label for="name">Saison-Name</label>
+			<input type="text" class="form-control" id="name" ng-model="obj.name">
+		</div>
+		<div class="col-md-6">
+			<label for="begin">Beginn</label>
+			<input type="date" class="form-control" id="begin" max="9999-12-31" 
+				ng-model="obj.getSetBegin" ng-model-options="{ getterSetter: true, timezone: 'UTC' }">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<label for="begin2">Beginn 2. Hälfte</label>
+			<input type="date" class="form-control" id="begin2" max="9999-12-31" 
+				ng-model="obj.getSetBegin2" ng-model-options="{ getterSetter: true, timezone: 'UTC' }">
+		</div>
+		<div class="col-md-6">
+			<label for="end">Ende</label>
+			<input type="date" class="form-control" id="end" max="9999-12-31" 
+				ng-model="obj.getSetEnd" ng-model-options="{ getterSetter: true, timezone: 'UTC' }">
+		</div>
+	</div>
+	<div class="row" ng-if="obj.id">
+		<div class="col-md-12">
+			<span class="fieldLabel">Letzte Änderung: {{obj.changedAt | date:"dd.MM.yyyy HH:mm"}} ({{obj.changedBy}})</span>
+		</div>
+	</div>
+</div>
+
+</form>
+
+</div>
+<div class="modal-footer">
+	<div style="float: left">
+		<button ng-if="obj.id" class="btn btn-danger" type="button" ng-click="delete()">Löschen</button>
+	</div>
+	<span ng-if="DlrgTla.thinking"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></span>
+	<span ng-if="commitFailed" style="color: red"><span class="glyphicon glyphicon-remove"></span> Fehlgeschlagen&nbsp;</span>
+	<span ng-if="missing" style="color: red"><span class="glyphicon glyphicon-remove"></span> '{{missing}}' fehlt&nbsp;</span>
+    <button class="btn btn-primary" type="button" ng-click="ok()">Speichern</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+</div>

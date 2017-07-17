@@ -1,0 +1,21 @@
+
+# create & grant privileges to DB user
+CREATE USER 'denis_dlrg_admin'@'localhost' IDENTIFIED BY PASSWORD PASSWORD("xyz");
+GRANT ALL PRIVILEGES ON `denis_dlrg_tla_test`.* TO 'denis_dlrg_admin'@'localhost'
+GRANT ALL PRIVILEGES ON `denis_dlrg_tla`.* TO 'denis_dlrg_admin'@'localhost'
+
+# dump schema and data
+mysqldump -d denis_dlrg_tla_test >denis_dlrg_tla_test-schema.sql
+mysqldump --no-create-db --no-create-info denis_dlrg_tla_test >denis_dlrg_tla_test-data.sql
+
+# clear user data
+TRUNCATE TABLE dlrg_tla_registrations;
+TRUNCATE TABLE dlrg_tla_qualifications;
+TRUNCATE TABLE dlrg_tla_courseparticipants;
+TRUNCATE TABLE dlrg_tla_participants;
+ALTER TABLE dlrg_tla_registrations AUTO_INCREMENT = 1;
+ALTER TABLE dlrg_tla_qualifications AUTO_INCREMENT = 1;
+ALTER TABLE dlrg_tla_courseparticipants AUTO_INCREMENT = 1;
+ALTER TABLE dlrg_tla_participants AUTO_INCREMENT = 1;
+
+

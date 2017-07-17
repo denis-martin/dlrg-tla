@@ -1,0 +1,36 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">{{modalTitle}}: {{d.date | date:"dd.MM.yyyy"}}</h3>
+	<div style="float: right">
+		<button class="btn" type="button" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span></button>
+	</div>
+</div>
+<div class="modal-body" id="modal-body">
+
+<form>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">
+			<label for="desc">Beschreibung</label>
+			<input type="text" class="form-control" id="desc" ng-model="newd.desc">
+		</div>
+		<div class="col-md-4">
+			<label>&nbsp;</label>
+			<div class="paddedText">
+				<input type="checkbox" id="training" ng-model="newd.training">
+				<label for="training" title="regulärer Übungsabend" style="font-size: 14px; font-weight: normal">Übungsabend</label>
+			</div>
+		</div>
+	</div>
+</div>
+
+</form>
+
+</div>
+<div class="modal-footer">
+	<span ng-if="DlrgTla.thinking"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></span>
+	<span ng-if="commitFailed" style="color: red"><span class="glyphicon glyphicon-remove"></span> Fehlgeschlagen&nbsp;</span>
+	<span ng-if="missing" style="color: red"><span class="glyphicon glyphicon-remove"></span> '{{missing}}' fehlt&nbsp;</span>
+    <button class="btn btn-primary" type="button" ng-click="ok()">Speichern</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+</div>

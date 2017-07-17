@@ -1,0 +1,111 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<span class="glyphicon glyphicon-user"></span> Teilnehmer
+		<div style="float: right">
+			<a href="#" ng-click="DlrgTla.uiEditParticipant()"><span class="glyphicon glyphicon-file"></span> Neu</a>&nbsp;&nbsp;
+			<a href="#" ng-click="DlrgTla.uiEditParticipant(null, cr)"><span class="glyphicon glyphicon-duplicate"></span> Neu mit Kopie</a>&nbsp;&nbsp;
+			<a href="#" ng-click="DlrgTla.uiEditParticipant(cr)"><span class="glyphicon glyphicon-pencil"></span> Bearbeiten</a>
+		</div>
+	</div>
+	<div class="panel-body container">
+		<div class="row">
+			<div class="col-sm-5">
+				<div class="row" ng-if="cr">
+					<div class="col-sm-6">
+						<span class="fieldLabel">Name, Geburtsdatum</span><br>
+						{{cr.data.lastName}}<span ng-if="cr.data.lastName && cr.data.firstName">,</span> {{cr.data.firstName}}<br>
+						{{cr.data.birthdate | date:"dd.MM.yyyy"}} <span ng-if="cr.data.birthdate" class="smallText">({{cr.getAge()}} Jahre)</span>
+					</div>
+					<div class="col-sm-6">
+						<span class="fieldLabel">Adresse</span><br>
+						{{cr.data.street}}<br>
+						{{cr.data.zipCode}} {{cr.data.city}}
+					</div>
+				</div>
+				<div class="row" ng-if="cr">
+					<div class="col-sm-6">
+						<span class="fieldLabel">Kontakt</span><br>
+						<span ng-if="cr.data.phone">{{cr.data.phone}} <span class="smallText">(privat)</span><br></span>
+						<span ng-if="cr.data.phoneWork">{{cr.data.phoneWork}} <span class="smallText">(gesch.)</span><br></span>
+						<span ng-if="cr.data.phoneMobile">{{cr.data.phoneMobile}} <span class="smallText">(mobil)</span><br></span>
+						<span ng-if="cr.data.email"><a href="mailto:{{cr.data.email}}">{{cr.data.email}}</a></span>
+					</div>
+					<div class="col-sm-6">
+						<span class="fieldLabel">Alt. Kontakt / Eltern</span><br>
+						<span ng-if="cr.data.altContact">{{cr.data.altContact}}<br></span>
+						<a href="mailto:{{cr.data.altEmail}}">{{cr.data.altEmail}}</a>
+					</div>
+				</div>
+				<div class="row" ng-if="cr">
+					<div class="col-sm-6">
+						<span class="fieldLabel">Gesundheit</span><br>
+						<span ng-if="!cr.data.health">(keine Angaben)</span>{{cr.data.health}}
+					</div>
+					<div class="col-sm-6">
+						<span class="fieldLabel">Notizen</span><br>
+						<span ng-if="!cr.data.notes">(keine)</span>{{cr.data.notes}}
+					</div>
+				</div>
+				<div class="row" ng-if="cr">
+					<div class="col-sm-12">
+						<span class="fieldLabel">Letzte Änderung: {{cr.changedAt | date:"dd.MM.yyyy HH:mm"}} ({{cr.changedBy}})</span><br>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-7">
+				<div ui-grid="gridOptions" ui-grid-selection class="dlrgtlaGrid participantsGrid"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div style="padding-left: 10px">
+					<hr style="margin: 0">
+				</div>
+			</div>
+		</div>
+		<div class="row" ng-if="isActive() && cr">
+			<div class="col-sm-3">
+				<div style="padding-left: 10px; padding-bottom: 10px">
+					<span class="fieldLabel">Anmeldungen/Warteliste <span ng-show="cr">(<a href="#" ng-click="DlrgTla.uiEditRegistration(null, cr.id)">Neu</a>)</span></span><br>
+					<div ng-repeat="r in DlrgTla.getEntriesByParticipant('registrations', cr.id)">
+						<a href="#" ng-click="DlrgTla.uiEditRegistration(r)">{{r.data.date | date:"dd.MM.yyyy"}}: {{r.ctId | dbfield:"coursetypes":"name"}}</a>
+					</div>
+					<div ng-if="DlrgTla.getEntriesByParticipant('registrations', cr.id).length==0">(keine)</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<span class="fieldLabel">Kurse als Teilnehmer <span ng-show="cr">(<a href="#" ng-click="DlrgTla.uiEditCourseParticipant(null, null, cr.id)">Neu</a>)</span></span><br>
+				<div ng-repeat="r in DlrgTla.getEntriesByParticipant('courseparticipants', cr.id) | filter: { sId: DlrgTla.sId, pId: cr.id, instructor: 0 } ">
+					<a href="#" ng-click="DlrgTla.uiEditCourseParticipant(r)">{{r.cId | dbfield:"courses":"name"}}
+						<span class="smallText">({{DlrgTla.getEntry("courses", r.cId).begin | date:"dd.MM.yyyy"}})</span>
+					</a>
+				</div>
+				<div ng-if="DlrgTla.getEntriesFiltered('courseparticipants', { sId: DlrgTla.sId, pId: cr.id, instructor: 0 }).length==0">(keine)</div>
+			</div>
+			<div class="col-sm-3">
+				<span class="fieldLabel">Kurse als Ausbilder <span ng-show="cr">(<a href="#" ng-click="DlrgTla.uiEditCourseParticipant(null, null, cr.id, 1)">Neu</a>)</span></span><br>
+				<div ng-repeat="r in DlrgTla.getEntriesByParticipant('courseparticipants', cr.id) | filter: { sId: DlrgTla.sId, pId: cr.id, instructor: 1 } ">
+					<a href="#" ng-click="DlrgTla.uiEditCourseParticipant(r)">{{r.cId | dbfield:"courses":"name"}}
+						<span class="smallText">({{DlrgTla.getEntry("courses", r.cId).begin | date:"dd.MM.yyyy"}})</span>
+					</a>
+				</div>
+				<div ng-if="DlrgTla.getEntriesFiltered('courseparticipants', { sId: DlrgTla.sId, pId: cr.id, instructor: 1 }).length==0">(keine)</div>
+			</div>
+			<div class="col-sm-3">
+				<span class="fieldLabel">Qualifikationen <span ng-show="cr">(<a href="#" ng-click="DlrgTla.uiEditQualification(null, cr.id)">Neu</a>)</span></span><br>
+				<ul ng-if="DlrgTla.getEntriesByParticipant('qualifications', cr.id).length>0" style="padding-left: 15px">
+					<li ng-repeat="r in DlrgTla.getEntriesByParticipant('qualifications', cr.id)">
+						<a href="#" ng-click="DlrgTla.uiEditQualification(r)" title="{{r.data.notes}}">{{r.qtId | dbfield:"qualificationtypes":"name"}} 
+							<span ng-if="r.data.expiryDate" class="smallText">(bis {{r.data.expiryDate | date:"dd.MM.yyyy"}})</span>
+							<span ng-if="!r.data.expiryDate && r.data.date" class="smallText">({{r.data.date | date:"dd.MM.yyyy"}})</span>
+						</a>
+					</li>
+				</ul>
+				<div ng-if="DlrgTla.getEntriesByParticipant('qualifications', cr.id).length==0">(keine)</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer">
+		{{DlrgTla.db.participants.length}} Teilnehmer
+	</div>
+</div>

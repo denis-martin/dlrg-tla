@@ -1,0 +1,108 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">{{modalTitle}}</h3>
+	<div style="float: right">
+		<button class="btn" type="button" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span></button>
+	</div>
+</div>
+<div class="modal-body" id="modal-body">
+
+<form>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-3">
+			<label for="season">Saison</label>
+			<select class="form-control" id="season" ng-model="obj.sId">
+				<option ng-repeat="option in DlrgTla.db.seasons" ng-value="option.id">{{option.name}}</option>
+			</select>
+		</div>
+		<div class="col-md-3">
+			<label for="name">Kursname</label>
+			<input type="text" class="form-control" id="name" ng-model="obj.name">
+		</div>
+		<div class="col-md-3">
+			<label for="coursetype">Kurstyp</label>
+			<select class="form-control" id="coursetype" ng-model="obj.ctId">
+				<option ng-repeat="option in DlrgTla.db.coursetypes" ng-value="option.id">{{option.name}}</option>
+			</select>
+		</div>
+		<div class="col-md-3">
+			<label for="lane">Bahn/Becken</label>
+			<select class="form-control" id="lane" ng-model="obj.lane">
+				<option ng-repeat="option in DlrgTla.lanes" ng-value="option">{{option}}</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<label for="begin">Beginn</label>
+			<div style="float: right">
+				<label for="end" style="font-weight: normal">
+					<a href="#" ng-click="obj.getSetBegin(DlrgTla.getSeason().getSetBegin())"
+						title="Beginn 1. Saison-Hälfte">
+						{{DlrgTla.getSeason().getSetBegin() | date:"dd.MM.yyyy"}}</a>&nbsp;&nbsp;
+					<a href="#" ng-click="obj.getSetBegin(DlrgTla.getSeason().getSetBegin2())"
+						title="Beginn 2. Saison-Hälfte">
+						{{DlrgTla.getSeason().getSetBegin2() | date:"dd.MM.yyyy"}}</a>
+				</label>
+			</div>
+			<input type="date" class="form-control" id="begin" max="9999-12-31" 
+				ng-model="obj.getSetBegin" ng-model-options="{ getterSetter: true, timezone: 'UTC' }">
+		</div>
+		<div class="col-md-3">
+			<label for="end">Ende</label>
+			<div style="float: right">
+				<label for="end" style="font-weight: normal">
+					<a href="#" ng-click="obj.getSetEnd(DlrgTla.getSeason().getEnd1())"
+						title="Ende 1. Saison-Hälfte">
+						{{DlrgTla.getSeason().getEnd1() | date:"dd.MM.yyyy"}}</a>&nbsp;&nbsp;
+					<a href="#" ng-click="obj.getSetEnd(DlrgTla.getSeason().getSetEnd())"
+						title="Ende 2. Saison-Hälfte">
+						{{DlrgTla.getSeason().getSetEnd() | date:"dd.MM.yyyy"}}</a>
+				</label>
+			</div>
+			<input type="date" class="form-control" id="end" max="9999-12-31" 
+				ng-model="obj.getSetEnd" ng-model-options="{ getterSetter: true, timezone: 'UTC' }">
+		</div>
+		<div class="col-md-2">
+			<label for="capacity">Kapazität</label>
+			<input type="number" class="form-control" id="capacity" ng-model="obj.capacity">
+		</div>
+		<div class="col-md-3">
+			<label for="seasonPass">Übungsabend-/Kurskarte</label>
+			<select class="form-control" id="seasonPass" ng-model="obj.seasonPass" convert-to-number>
+				<option value="1">Übungsabendkarte</option>
+				<option value="0">Kurskarte</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<label for="charge">Gebühr (€)</label>
+			<input type="number" class="form-control" id="charge" ng-model="obj.charge" step="0.01">
+		</div>
+		<div class="col-md-3">
+			<label for="chargeNonMember">Für Nicht-Mitglieder (€)</label>
+			<input type="number" class="form-control" id="chargeNonMember" ng-model="obj.chargeNonMember" step="0.01">
+		</div>
+	</div>
+	<div class="row" ng-if="obj.id">
+		<div class="col-md-12">
+			<span class="fieldLabel">Letzte Änderung: {{obj.changedAt | date:"dd.MM.yyyy HH:mm"}} ({{obj.changedBy}})</span>
+		</div>
+	</div>
+</div>
+
+</form>
+
+</div>
+<div class="modal-footer">
+	<div style="float: left">
+		<button ng-if="obj.id" class="btn btn-danger" type="button" ng-click="delete()">Löschen</button>
+	</div>
+	<span ng-if="DlrgTla.thinking"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></span>
+	<span ng-if="commitFailed" style="color: red"><span class="glyphicon glyphicon-remove"></span> Fehlgeschlagen&nbsp;</span>
+	<span ng-if="missing" style="color: red"><span class="glyphicon glyphicon-remove"></span> {{missing}} fehlt&nbsp;</span>
+    <button class="btn btn-primary" type="button" ng-click="ok()">Speichern</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+</div>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html ng-app="DlrgTlaApp" lang="de">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="initial-scale=1, width=device-width"/>
+	<title>DLRG Ettlingen e.V. - TLA Datenbank - (c) 2016-2017 Denis Martin</title>
+
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/moment/moment.js"></script>
+	<script src="bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+	<script src="bower_components/fullcalendar/dist/gcal.js"></script>
+	<script src="bower_components/fullcalendar/dist/lang/de.js"></script>
+
+	<script src="bower_components/ical.js/build/ical.min.js"></script>
+	<script src="3rdparty/icalendar2fullcalendar/ical_events.js"></script>
+	<script src="3rdparty/icalendar2fullcalendar/ical_fullcalendar.js"></script>
+
+	<script src="bower_components/crypto-js/crypto-js.js"></script>
+	<script src="bower_components/papaparse/papaparse.min.js"></script>
+	<script src="bower_components/lodash/dist/lodash.min.js"></script>
+
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
+	<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+	<script src="bower_components/angular-ui-grid/ui-grid.min.js"></script>
+	<script src="bower_components/angular-ui-calendar/src/calendar.js"></script>
+
+	<script src="src/main.js"></script>
+	<script src="src/participants.js"></script>
+	<script src="src/registrations.js"></script>
+	<script src="src/qualifications.js"></script>
+	<script src="src/seasons.js"></script>
+	<script src="src/courses.js"></script>
+	<script src="src/calendar.js"></script>
+	<script src="src/import.js"></script>
+
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/angular-ui-grid/ui-grid.min.css">
+	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.min.css">
+	<link rel="stylesheet" href="styles/default.css">
+</head>
+<body ng-controller="DlrgTlaMainCtrl as DlrgTla" ui-i18n="de">
+	<div ng-if="DlrgTla.thinking" class="thinking"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> {{DlrgTla.thinking}}</div>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-left" href="#" ng-click="DlrgTla.uiSwitchPanel('calendar')"><div class="logo"></div></a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li uib-dropdown>
+					<a uib-dropdown-toggle href="#">{{DlrgTla.sId ? DlrgTla.getEntry("seasons", DlrgTla.sId).name : "Saisons"}}
+						</a>
+					<ul class="dropdown-menu" uib-dropdown-menu>
+						<li><a href="#" ng-click="DlrgTla.uiSwitchPanel('calendar')" ng-class="DlrgTla.panel=='calendar' ? 'active' : ''">Kalender</a></li>
+						<li><a href="#" ng-click="DlrgTla.uiEditSeason(DlrgTla.sId)">Saison bearbeiten...</a></li>
+						<li><a href="#" ng-click="DlrgTla.uiEditSeason()">Neue Saison...</a></li>
+						<li class="divider"></li>
+						<li ng-repeat="r in DlrgTla.db.seasons | orderBy:'begin':true" ng-class="{ active: DlrgTla.sId===r.id }">
+							<a href="#" ng-click="DlrgTla.setSeason(r.id)">{{r.name}}</a>
+						</li>
+						<li ng-if="DlrgTla.userName=='Unbekannter'" class="divider"></li>
+						<li ng-if="DlrgTla.userName=='Unbekannter'" ><a href="#" ng-click="DlrgTla.panel='import'">Importieren</a></li>
+					</ul>
+				</li>
+
+				<li ng-class="DlrgTla.panel=='participants' ? 'active' : ''" uib-dropdown>
+					<a href="#" ng-click="DlrgTla.uiSwitchPanel('participants')">
+						<span class="glyphicon glyphicon-user"></span> Teilnehmer
+					</a>
+				</li>
+
+				<li ng-class="DlrgTla.panel=='qualifications' ? 'active' : ''" uib-dropdown>
+					<a href="#" ng-click="DlrgTla.uiSwitchPanel('qualifications')">
+						<span class="glyphicon glyphicon-education"></span> Qualifikationen
+					</a>
+				</li>
+
+				<li ng-class="DlrgTla.panel=='registrations' ? 'active' : ''" uib-dropdown>
+					<a href="#" ng-click="DlrgTla.uiSwitchPanel('registrations')">
+						<span class="glyphicon glyphicon-star"></span> Anmeldungen
+					</a>
+				</li>
+
+				<li ng-class="DlrgTla.panel=='courses' ? 'active' : ''" uib-dropdown>
+					<a href="#" ng-click="DlrgTla.uiSwitchPanel('courses')">
+						<span class="glyphicon glyphicon-bullhorn"></span> Kurse
+					</a>
+				</li>
+
+				<li uib-dropdown>
+					<a uib-dropdown-toggle href="#"><span class="glyphicon glyphicon-print"></span> Drucken</a>
+					<ul class="dropdown-menu" uib-dropdown-menu>
+						<li ng-class="DlrgTla.panel=='printPasses' ? 'active' : ''">
+							<a href="#" ng-click="DlrgTla.uiSwitchPanel('printPasses')">Übungsabend-/Kurskarten</a>
+						</li>
+						<li ng-class="DlrgTla.panel=='printCoursePresenceSheets' ? 'active' : ''">
+							<a href="#" ng-click="DlrgTla.uiSwitchPanel('printCoursePresenceSheets')">Anwesenheitslisten</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="#" ng-click="DlrgTla.logout(); DlrgTla.uiAuth()"><span class="glyphicon glyphicon-log-out"></span> Abmelden</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div ng-show="DlrgTla.panel=='participants'" ng-include src="'ui/participants.html'" ng-controller="ParticipantsCtrl"></div>
+	<div ng-show="DlrgTla.panel=='registrations'" ng-include src="'ui/registrations.html'" ng-controller="RegistrationsCtrl"></div>
+	<div ng-show="DlrgTla.panel=='qualifications'" ng-include src="'ui/qualifications.html'" ng-controller="QualificationsCtrl"></div>
+	<div ng-show="DlrgTla.panel=='courses'" ng-include src="'ui/courses.html'" ng-controller="CoursesCtrl"></div>
+	<div ng-show="DlrgTla.panel=='calendar'" ng-include src="'ui/calendar.html'" ng-controller="CalendarCtrl"></div>
+	<div ng-show="DlrgTla.panel=='import'" ng-include src="'ui/import.html'" ng-controller="ImportCtrl"></div>
+	<div ng-if="DlrgTla.panel=='printCoursePresenceSheets'">
+		<div class="panel panel-primary">
+			<div class="panel-heading"><span class="glyphicon glyphicon-print"></span> Anwesenheitslisten</div>
+			<div class="panel-body">
+				<iframe src="print/coursePresenceSheets.html" width="100%" height="600px" style="border: none"></iframe>
+			</div>
+		</div>
+	</div>
+	<div ng-if="DlrgTla.panel=='printPasses'">
+		<div class="panel panel-primary">
+			<div class="panel-heading"><span class="glyphicon glyphicon-print"></span> Übungsabend-/Kurskarten</div>
+			<div class="panel-body">
+				<iframe src="print/passes.html" width="100%" height="600px" style="border: none"></iframe>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

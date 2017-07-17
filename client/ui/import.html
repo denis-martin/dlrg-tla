@@ -1,0 +1,33 @@
+<div class="panel panel-primary">
+	<div class="panel-heading"><span class="glyphicon glyphicon-user"></span> Importieren</div>
+	<div class="panel-body">
+		<form ng-submit="import()">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-4">
+						<label for="importType">
+						<select ng-model="importType" id="importType">
+							<option value="participants">TPersoenlicheDaten</option>
+							<option value="registrations">AWarteliste</option>
+							<option value="qualifications">TQualifikation</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<textarea id="import" class="form-control" ng-model="csv" placeholder="CSV hier einfügen"></textarea>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<button type="submit" class="form-control btn btn-primary">Importieren</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="panel-footer">
+		<span ng-if="thinking" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+		{{importedCount}} Einträge importiert
+	</div>
+</div>

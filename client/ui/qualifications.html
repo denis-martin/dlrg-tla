@@ -1,0 +1,24 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<span class="glyphicon glyphicon-education"></span> Qualifikationen
+		<div style="float: right">
+			<a href="#" ng-show="cr && cr.pId" ng-click="DlrgTla.uiEditParticipant(cr.pId)">
+				<span class="glyphicon glyphicon-user"></span> Teilnehmer bearbeiten
+			</a>
+			&nbsp;
+			<a href="#" ng-show="cr" ng-click="DlrgTla.uiEditQualification(cr)">
+				<span class="glyphicon glyphicon-pencil"></span> Qualifikation bearbeiten
+			</a>
+		</div>
+	</div>
+	<div class="panel-body container" >
+		<div class="row">
+			<div class="col-sm-12">
+				<div ui-grid="gridOptions" ui-grid-selection class="dlrgtlaGrid qualificationsGrid"></div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer" ng-ig="isActive()">
+		{{gridApi.core.getVisibleRows(gridApi.grid).length}} Qualifikationen
+	</div>
+</div>

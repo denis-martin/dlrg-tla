@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html ng-app="DlrgTlaPrintApp" lang="de">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="initial-scale=1, width=device-width"/>
+	<title>DLRG Ettlingen e.V. - Übungsabend-/Kurskarte</title>
+	<script src="../bower_components/angular/angular.min.js"></script>
+	<script src="../src/print.js"></script>
+	<link rel="stylesheet" href="../styles/Code39Azalea/Code39Azalea.css">
+	<link rel="stylesheet" href="../styles/print.css">
+</head>
+<body ng-controller="DlrgTlaPrintCtrl as DlrgTlaPrint" ui-i18n="de" ng-init="s = DlrgTla.getEntry('seasons', DlrgTla.sId)">
+	<div class="no-print control" style="margin-bottom: 10px">
+		<a href="#" ng-click="DlrgTlaPrint.print()" style="margin-right: 10px">Drucken</a>
+		<input type="checkbox" id="passesOnlyPayed" ng-model="passesOnlyPayed"><label for="passesOnlyPayed">nur bezahlte</label>
+		<input type="checkbox" id="passesOnlyNotSent" ng-model="passesOnlyNotSent"><label for="passesOnlyNotSent">nur nicht versandte</label>
+		<input type="checkbox" id="passesInstructors" ng-model="passesInstructors"><label for="passesInstructors">Ausbilder</label> &nbsp; &nbsp;
+		Teilnehmer: <select ng-model="passesCpId">
+			<option ng-value="0">(alle)</option>
+			<option 
+				ng-repeat="cp in DlrgTla.db.courseparticipants | filterCourseParticipants:passesOnlyPayed:passesOnlyNotSent:passesInstructors | orderBy: getParticipantName"
+				ng-value="cp.id">
+				{{getParticipantName(cp)}}
+			</option>
+		</select>
+	</div>
+
+	<!-- ng-repeat="cp in DlrgTla.db.courseparticipants | filter: { sId: DlrgTla.sId, instructor: 0 }"  -->
+	<div class="page" style="border: 1px solid lightgrey; padding: 4mm; width: 130mm; font-size: 10pt"
+		ng-repeat="cp in DlrgTla.db.courseparticipants | filterCourseParticipants:passesOnlyPayed:passesOnlyNotSent:passesInstructors:passesCpId | orderBy: getParticipantName" 
+		ng-init="p = DlrgTla.getEntry('participants', cp.pId); c = DlrgTla.getEntry('courses', cp.cId)">
+
+		<div class="no-print control" style="float: left; position: absolute; left: 145mm; right: 0">
+			E-Mail:
+			<p>
+				<a ng-if="p.data.email" href="mailto:{{p.data.email}}?subject={{c.seasonPass ? 'Übungsabendkarte ' + getParticipantName(cp) + ' ' + s.name : 'Kurskarte ' + getParticipantName(cp) + ' ' + c.name}}">{{p.data.email}}</a><br>
+				<a ng-if="p.data.altEmail" href="mailto:{{p.data.altEmail}}">{{p.data.altEmail}}</a>
+			</p>
+			<!-- <a href="#" ng-click="DlrgTla.uiEditCourseParticipant(cp)">Kursteilnehmer bearbeiten</a> -->
+		</div>
+
+		<div style="float: right">
+			<span class="small">{{cp.pId}} / {{cp.id}} / {{c.begin | date:"yyyy"}}</span>
+		</div>
+
+		<div style="position: absolute">
+			<img src="../img/dlrg-logo.svg" style="height: 10mm; margin-right: 3mm; float: left">
+			<div class="small" style="width: 100mm">
+				Deutsche Lebens-Rettungs-Gesellschaft<br>
+				Ortsgruppe Ettlingen e.V.
+			</div>
+		</div>
+
+		<div style="text-align: center; margin-top: 12mm">
+			<div ng-if="c.seasonPass">
+				<span class="large">Übungsabendkarte für die {{s.name}}</span><br>
+				vom {{s.begin | date:"dd.MM.yyyy"}} bis zum {{s.end | date:"dd.MM.yyyy"}}
+			</div>
+			<div ng-if="!c.seasonPass">
+				<span class="large">Kurskarte für den Kurs {{c.name}}</span><br>
+				vom {{c.begin | date:"dd.MM.yyyy"}} bis zum {{c.end | date:"dd.MM.yyyy"}}
+			</div>
+			<div style="margin-top: 4mm; margin-bottom: 2mm">
+				<span class="large">{{p.data.lastName}}, {{p.data.firstName}}</span>
+			</div>
+			<div style="margin-bottom: 4mm">
+				<span class="barcode">*{{cp.pId}}*</span>
+			</div>
+			<div ng-if="cp.charge">
+				Die Gebühren in Höhe von {{cp.charge}} € wurden <span ng-if="cp.data.chargePayedAt">am {{cp.data.chargePayedAt | date:"dd.MM.yyyy"}}</span> bezahlt.
+			</div>
+		</div>
+
+		<div style="margin-top: 4mm">
+			<div>
+				Ettlingen, September {{c.begin | date:"yyyy"}}<br>
+				<img src="../img/signature.png" style="height: 10mm"><br>
+				Der Vorstand: Frank Weicholdt
+				<div style="float: right">
+					Die Karte ist nicht übertragbar.
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

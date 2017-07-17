@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html ng-app="DlrgTlaPrintApp" lang="de">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="initial-scale=1, width=device-width"/>
+	<title>DLRG Ettlingen e.V. - Anwesenheitsliste</title>
+	<script src="../bower_components/angular/angular.min.js"></script>
+	<script src="../src/print.js"></script>
+	<link rel="stylesheet" href="../styles/Code39Azalea/Code39Azalea.css">
+	<link rel="stylesheet" href="../styles/print.css">
+</head>
+<body ng-controller="DlrgTlaPrintCtrl as DlrgTlaPrint" ui-i18n="de" ng-init="s = DlrgTla.getEntry('seasons', DlrgTla.sId)">
+	<div class="no-print control" style="margin-bottom: 10px">
+		<a href="#" ng-click="DlrgTlaPrint.print()" style="margin-right: 10px">Drucken</a>
+		<input type="checkbox" id="presenceSheetsChecklist" ng-model="presenceSheetsChecklist"><label for="presenceSheetsChecklist" style="margin-right: 10px">Leistungen</label>
+		<select ng-model="secondHalf">
+			<option ng-value="false">1. Saison-Hälfte</option>
+			<option ng-value="true">2. Saison-Hälfte</option>
+		</select>
+	</div>
+
+	<div ng-repeat="c in DlrgTla.db.courses | filterCoursesByDates : (secondHalf ? s.begin2 : s.begin) : (secondHalf ? s.end : s.begin2)">
+		<div class="page">
+			<span style="font-size: 150%; margin-right: 0.5em">{{c.name}} </span>
+			<div style="float: right; font-size: 150%">
+				{{DlrgTla.getEntry('seasons', DlrgTla.sId).name}}
+				<img src="../img/dlrg-logo.svg" style="height: 1.2em; vertical-align: text-bottom">
+			</div>
+			<div style="position: absolute">
+				{{c.begin | date:"dd.MM.yyyy"}} &ndash; {{c.end | date:"dd.MM.yyyy"}}<br>
+				{{c.lane}}
+			</div>
+			
+			<table style="margin-top: 15mm">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Geb.</th>
+						<th>Anmerkung</th>
+
+						<th ng-if="!secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays1()">
+							<div class="dateHeader narrow">
+								{{d.date | date:"dd.MM."}}
+								<span ng-if="d.desc" style="font-weight: normal">{{d.desc | shorten:14 }}</span>
+							</div>
+						</th>
+						<th ng-if="secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays2()">
+							<div class="dateHeader narrow">
+								{{d.date | date:"dd.MM."}}
+								<span ng-if="d.desc" style="font-weight: normal">{{d.desc | shorten:14 }}</span>
+							</div>
+						</th>
+						<th>Teilnehmernummer</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="cp in DlrgTla.db.courseparticipants | filter: { cId: c.id, instructor: 1 } | orderBy: getParticipantName"
+						ng-init="p = DlrgTla.getEntry('participants', cp.pId)">
+						<td class="narrow">{{p.data.lastName}}, {{p.data.firstName}}</td>
+						<td class="narrow">{{p.data.birthdate | date:"dd.MM.yyyy"}}</td>
+						<td class="narrow">Ausbilder</td>
+
+						<td ng-if="!secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays1()" style="text-align: center">
+							<div ng-if="d.training" class="tickBox"></div>
+							<span ng-if="!d.training">&#8260;</span>
+						</td>
+						<td ng-if="secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays2()" style="text-align: center">
+							<div ng-if="d.training" class="tickBox"></div>
+							<span ng-if="!d.training">&#8260;</span>
+						</td>
+						<td style="padding: 2pt">
+							<div style="overflow: hidden; height: 20pt; width: 100%">
+								<span style="vertical-align: text-top; float: left; width: 8mm; text-align: right; font-size: 8pt">{{cp.pId}}&nbsp;</span>
+								<span class="barcode" style="vertical-align: text-top">*{{cp.pId}}*</span>
+							</div>
+						</td>
+					</tr>
+					<tr class="rowSeparator">
+						<td></td>
+						<td></td>
+						<td></td>
+
+						<td ng-if="!secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays1()">
+						</td>
+						<td ng-if="secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays2()">
+						</td>
+						<td></td>
+					</tr>
+					<tr ng-repeat="cp in DlrgTla.db.courseparticipants | filter: { cId: c.id, instructor: 0 } | orderBy: getParticipantName" 
+						ng-init="p = DlrgTla.getEntry('participants', cp.pId)"
+						class="rowParticipant">
+						<td class="narrow">{{p.data.lastName}}, {{p.data.firstName}}</td>
+						<td class="narrow">{{p.data.birthdate | date:"dd.MM.yyyy"}}</td>
+						<td class="narrow" style="white-space: unset;">
+							<div style="width: 20mm; height: 22pt; font-size: 65%; word-wrap: break-all; overflow: hidden">{{p.data.health}}</div>
+						</td>
+
+						<td ng-if="!secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays1()" style="text-align: center">
+							<div ng-if="d.training" class="tickBox"></div>
+							<span ng-if="!d.training">&#8260;</span>
+						</td>
+						<td ng-if="secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays2()" style="text-align: center">
+							<div ng-if="d.training" class="tickBox"></div>
+							<span ng-if="!d.training">&#8260;</span>
+						</td>
+						<td style="padding: 2pt">
+							<div style="overflow: hidden; height: 20pt; width: 100%">
+								<span style="vertical-align: text-top; float: left; width: 8mm; text-align: right; font-size: 8pt">{{cp.pId}}&nbsp;</span>
+								<span class="barcode" style="vertical-align: text-top">*{{cp.pId}}*</span>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="page" ng-if="presenceSheetsChecklist">
+			<div ng-if="hasChecklist(c.ctId)">
+				<span style="font-size: 150%; margin-right: 0.5em">{{c.name}} &ndash; Leistungen</span>
+				{{c.begin | date:"dd.MM.yyyy"}} &ndash; {{c.end | date:"dd.MM.yyyy"}}
+				<div style="float: right; font-size: 150%">
+					{{DlrgTla.getEntry('seasons', DlrgTla.sId).name}}
+					<img src="../img/dlrg-logo.svg" style="height: 1.2em; vertical-align: text-bottom">
+				</div>
+				
+				<div style="clear: both"></div>
+				<div style="display: table; width: 100%; margin-top: 4mm">
+					<div style="display: table-cell">
+						<table style="width: min-content">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<!--th>Geb.</th-->
+
+									<th ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: order" style="text-align: center">
+										{{$index+1}}.
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="cp in DlrgTla.db.courseparticipants | filter: { cId: c.id, instructor: 0 } | orderBy: getParticipantName" 
+									ng-init="p = DlrgTla.getEntry('participants', cp.pId)"
+									class="rowParticipant">
+									<td class="narrow">{{p.data.lastName}}, {{p.data.firstName}}</td>
+									<!-- td class="narrow">{{p.data.birthdate | date:"dd.MM.yyyy"}}</td -->
+									
+									<td ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: order">
+										<div style="width: 10mm; height: 9mm"></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div style="display: table-cell; width: 100%; padding-left: 5mm">
+						<div class="small narrow">
+							<p>Datum und ggfs. Zeiten vermerken!</p>
+							<p style="font-weight: bold">{{c.ctId | dbfield:"coursetypes":"prereq"}}</p>
+							Leistungen:
+							<ol style="padding-left: 5mm">
+								<li ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: order">
+									{{cti.item}}
+								</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div style="clear: both"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

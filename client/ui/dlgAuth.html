@@ -1,0 +1,31 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">Hallo {{DlrgTla.getUserShortName()}}!</h3>
+</div>
+<div class="modal-body" id="modal-body">
+	<form ng-submit="ok()">
+		<div ng-if="DlrgTla.needLogin">
+			<div class="form-group">
+				<label for="passphraseInput">Bitte melde dich an:</label>
+				<input type="password" class="form-control" id="passphraseInput" placeholder="Passwort" 
+					ng-model="DlrgTla.passphrase">
+			</div>
+		</div>
+		<div ng-if="!DlrgTla.needLogin && DlrgTla.needDataKey">
+			<div class="form-group">
+				<label for="dataKeyInput">Bitte gib den Datenschlüssel ein:</label>
+				<input type="password" class="form-control" id="dataKeyInput" placeholder="Datenschlüssel" 
+					ng-model="DlrgTla.dataKey">
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<div style="float: left">
+		<span ng-if="authSuccess" style="color: green"><span class="glyphicon glyphicon-ok"></span>Anmeldung</span>
+		<span ng-if="authFailed" style="color: red"><span class="glyphicon glyphicon-remove"></span>Anmeldung</span>
+		<span ng-if="decFailed" style="color: red"><span class="glyphicon glyphicon-remove"></span>Datenschlüssel</span>
+		<span ng-if="serverFailure" style="color: red"><span class="glyphicon glyphicon-remove"></span>Server-Fehler ({{serverFailure}})</span>
+	</div>
+	<span ng-if="DlrgTla.thinking" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+</div>
