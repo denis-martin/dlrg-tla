@@ -10,5 +10,25 @@ module.exports = {
 	session: {
 		secret : 'ne8~g|kGBm2~JGjgV9%S',
 		secure : true
-	}
+	},
+	calendars: {
+        dlrgettlingen: {
+            method: "GET",
+            host: "calendar.google.com",
+            port: 443,
+            path: "",
+        },
+        ferienbw: { // https://sites.google.com/site/schulferienkalender/
+            method: "GET",
+            host: "calendar.google.com",
+            port: 443,
+            path: "/calendar/ical/2vokk15mt5sua7ji7f9esdjl3g%40group.calendar.google.com/public/basic.ics",
+        },
+        feiertage: {
+            method: "GET",
+            host: "calendar.google.com",
+            port: 443,
+            path: "/calendar/ical/german__de%40holiday.calendar.google.com/public/basic.ics",
+        },
+    }
 }

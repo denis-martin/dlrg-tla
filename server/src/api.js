@@ -301,26 +301,8 @@ app.post('/api/db/:tablename/:id', requireLogin, checkTableAcl, requireDbc, func
 
 app.get('/api/calendars/:cal', requireLogin, function(req, res)
 {
-    var mycalendars = {
-        dlrgettlingen: {
-            method: "GET",
-            host: "calendar.google.com",
-            port: 443,
-            path: "/calendar/ical/t4pdlfm2u9bfu8a8v6mccqtugg%40group.calendar.google.com/private-a0154606ded00d009db4df7f66bdb7b7/basic.ics",
-        },
-        ferienbw: { // https://sites.google.com/site/schulferienkalender/
-            method: "GET",
-            host: "calendar.google.com",
-            port: 443,
-            path: "/calendar/ical/2vokk15mt5sua7ji7f9esdjl3g%40group.calendar.google.com/public/basic.ics",
-        },
-        feiertage: {
-            method: "GET",
-            host: "calendar.google.com",
-            port: 443,
-            path: "/calendar/ical/german__de%40holiday.calendar.google.com/public/basic.ics",
-        },
-    }
+    var mycalendars = config.calendars;
+    
     if (!mycalendars[req.params.cal]) {
         res.status(404).send({ code: 404, error: errors.notFound });
         return;
