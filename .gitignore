@@ -57,3 +57,17 @@ typings/
 # dotenv environment variables file
 .env
 
+# custom ignores
+.vscode/
+
+client/bower_components/
+client-gen2/node_modules/
+server/node_modules/
+
+server/debug.log
+
+client/img/dlrg-logo.svg
+client/img/signature.png
+
+client-gen2/src/assets/img/dlrg-logo.svg
+client-gen2/src/assets/img/signature.png
