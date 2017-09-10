@@ -102,7 +102,7 @@ app.get('/api/logout', function(req, res)
 
 app.get('/api/login', requireLogin, function(req, res) 
 {
-	res.status(200).send({ code: 200, ciphertest: "U2FsdGVkX183peBCkOPw4CaUAEY2Zf3xpNj/5dr8ft4=" });
+	res.status(200).send({ code: 200, user: req.user, ciphertest: "U2FsdGVkX183peBCkOPw4CaUAEY2Zf3xpNj/5dr8ft4=" });
 });
 
 app.get('/api/alive', function(req, res) 

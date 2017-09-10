@@ -1,5 +1,7 @@
 {
   "name": "dlrg-tla-client",
+  "version": "1.0.0",
+  "license": "GPLv3",
   "main": "index.html",
   "window": {
     "title": "DLRG OG Ettlingen e.V. - TLA Datenbank",
