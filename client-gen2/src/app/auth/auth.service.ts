@@ -161,13 +161,13 @@ export class AuthService
 
 	private checkCipher(challenge): boolean
 	{
-		//if (!this.dataKeyHash) {
-		//	this.dataKeyHash = localStorageService.get("dkh");
-		//}
+		if (!this.dataKeyHash) {
+			this.dataKeyHash = localStorage.getItem("dkh");
+		}
 		if (this.dataKeyHash && (this.decrypt(challenge) == ciphertest)) {
 			console.info("Decryption successful");
 			if (this.needDataKey) {
-				//localStorageService.set("dkh", this.dataKeyHash);
+				localStorage.setItem("dkh", this.dataKeyHash);
 			}
 			this.needDataKey = false;
 		} else {

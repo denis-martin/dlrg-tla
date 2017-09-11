@@ -5,6 +5,8 @@ import 'rxjs/add/operator/toPromise';
 
 import { AuthService } from '../auth/auth.service';
 
+import { Participant } from './participant.class';
+
 const apiBasePath = "/";
 
 @Injectable()
@@ -46,6 +48,13 @@ export class DataService
 			.toPromise()
 			.then(response => {
 				console.log("HTTP request was successful", response);
+				var items = response.json();
+				var participants: Participant[] = [];
+				items.forEach(item => {
+					item["data"] = JSON.parse(this.auth.decrypt(item.data_enc));
+					participants.push(new Participant(item));
+				});
+				console.log(participants);
 			})
 			.catch(this.handleError.bind(this));
 	}
