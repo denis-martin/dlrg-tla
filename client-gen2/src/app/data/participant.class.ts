@@ -1,14 +1,17 @@
+import { AuthService } from '../auth/auth.service';
 
 export type Sex = "m" | "f";
 export enum Membership { notNeeded = 0, needed = 1 };
 
 export class Participant
 {
-	private data_enc: string;
+	private auth: AuthService;
 
 	readonly id: number;
 	changedBy: string;
 	changedAt: string; // no need to convert to Date
+
+	private data_enc: string;
 	
 	data: 
 	{
@@ -37,8 +40,12 @@ export class Participant
 
 	constructor(jso: Object)
 	{
+		this.auth = AuthService.instance;
 		if (jso) {
 			Object.assign(this, jso);
+			if (this.data_enc != null) {
+				this.data = JSON.parse(this.auth.decrypt(this.data_enc));
+			}
 		}
 	}
 
@@ -55,8 +62,8 @@ export class Participant
 
 	getAge(): number
 	{
-		if (!this.data.birthdate) {
-			return 0;
+		if (this.getBirthdate() == null) {
+			return null;
 		}
 		var d = Date.now() - this.getBirthdate().getTime();
 		var age = new Date(d);

@@ -14,6 +14,8 @@ const ciphertest = "1234567890";
 @Injectable()
 export class AuthService 
 {
+	public static instance: AuthService;
+
 	private httpReqHeaders: Headers;
 	private modalRef: BsModalRef;
 	private cipherChallenge: string;
@@ -30,8 +32,14 @@ export class AuthService
 		private modalService: BsModalService,
 		private http: Http)
 	{
+		if (AuthService.instance != null) {
+			console.warn("AuthService should not be instantiated more than once");
+		} else {
+			AuthService.instance = this;
+		}
 		this.httpReqHeaders = new Headers();
 		this.httpReqHeaders.append("Content-Type", "application/json; charset=utf-8");
+		console.info("AuthService initialized");
 	}
 
 	getUserName(): string { return this.userName; }

@@ -9,9 +9,63 @@ import { Participant } from './participant.class';
 
 const apiBasePath = "/";
 
+interface ITableConnectorHashMap 
+{
+    [table: string] : ITableConnector;
+}
+
+interface ITableConnector
+{
+	items: any[];
+	startSync(): void;
+}
+
+// handles /api/db/{table} calls
+class TableConnector<T> implements ITableConnector
+{
+	private _type: { new(jso: Object): T };
+	items: T[] = [];
+
+	constructor(type: { new(jso: Object): T }, private table: string, private refreshRate: number, private ds: DataService) 
+	{ 
+		this._type = type;
+	}
+
+	startSync(): void 
+	{
+		this.ds.http.get(apiBasePath + "api/db/" + this.table)
+			.toPromise()
+			.then(response => {
+				console.log("HTTP GET " + apiBasePath + "api/db/" + this.table + " was successful", response);
+				var items = response.json();
+				items.forEach(item => {
+					this.items.push(new this._type(item));
+				});
+				console.log(this.items);
+			})
+			.catch(this.handleError.bind(this));
+	}
+
+	private handleError(response): void
+	{
+		console.error("HTTP request failed", response);
+		if (response.status == 401) {
+			this.ds.auth.login();
+		}
+	}
+}
+
 @Injectable()
 export class DataService 
 {
+	db: ITableConnectorHashMap = 
+	{
+		"participants": new TableConnector(Participant, "participants", 5000, this)
+	}
+
+	get participants(): Participant[] { return this.db["participants"].items; }
+
+	/*
 	db = {
 		participants: [],
 		registrations: [],
@@ -35,36 +89,12 @@ export class DataService
 		courses: 5000,
 		courseparticipants: 5000,
 	};
+	*/
 
-	constructor(private http: Http, private auth: AuthService) 
+	constructor(public http: Http, public auth: AuthService) 
 	{
-		console.log("DataService initialized");
 		this.startSync();
-	}
-
-	private startSyncForTable(table: string): void 
-	{
-		this.http.get(apiBasePath + "api/db/" + table)
-			.toPromise()
-			.then(response => {
-				console.log("HTTP request was successful", response);
-				var items = response.json();
-				var participants: Participant[] = [];
-				items.forEach(item => {
-					item["data"] = JSON.parse(this.auth.decrypt(item.data_enc));
-					participants.push(new Participant(item));
-				});
-				console.log(participants);
-			})
-			.catch(this.handleError.bind(this));
-	}
-
-	private handleError(response): void
-	{
-		console.error("HTTP request failed", response);
-		if (response.status == 401) {
-			this.auth.login();
-		}
+		console.info("DataService initialized");
 	}
 
 	getState(): string 
@@ -76,7 +106,9 @@ export class DataService
 	{
 		this.auth.login().then(() => 
 		{
-			this.startSyncForTable("participants");
+			Object.keys(this.db).forEach(table => {
+				this.db[table].startSync();
+			});
 
 		}).catch(() =>
 		{
