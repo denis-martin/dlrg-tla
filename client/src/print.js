@@ -60,15 +60,28 @@ var DlrgTlaPrintApp = angular.module('DlrgTlaPrintApp', [])
 	}
 }) // DlrgTlaPrintCtrl
 
+.filter('filterByCurrentSeason', function() 
+{
+	return function(courses) {
+		var r = [];
+		courses.forEach(c => { 
+			if (c.sId == DlrgTla.sId) {
+				r.push(c); 
+			}
+		});
+		return r;
+	}
+})
+
 .filter('filterCoursesByDates', function() 
 {
 	return function(courses, begin, end) {
 		var r = [];
 		courses.forEach(c => { 
-			if (c.sId == DlrgTla.sId && (c.begin >= begin && c.begin < end || c.end > begin && c.end <= end)) 
+			if (c.sId == DlrgTla.sId && (c.begin >= begin && c.begin < end || c.end > begin && c.end <= end)) {
 				r.push(c); 
 			}
-		);
+		});
 		return r;
 	}
 })

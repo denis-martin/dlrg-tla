@@ -106,3 +106,14 @@ tbody tr.rowSeparator { border-bottom: 1px solid black; }
 	font-family: Helvetica,Arial,sans-serif;
 	font-size: 10pt;
 }
+
+.seasonParticipants tr {
+	height: 6mm;
+}
+
+.seasonParticipants td:last-child {
+	max-width: 100mm;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
