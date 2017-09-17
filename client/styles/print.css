@@ -14,7 +14,7 @@
 
 	@page {
 		size: 297mm 210mm;
-		margin: 10mm 5mm 5mm 5mm;
+		margin: 10mm 5mm 10mm 5mm;
 		padding: 0;
 	}
 
@@ -117,3 +117,10 @@ tbody tr.rowSeparator { border-bottom: 1px solid black; }
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+
+.seasonParticipants th, td {
+	margin-top: -8px;
+	padding-top: 8px;
+	page-break-inside: avoid;
+}
+
