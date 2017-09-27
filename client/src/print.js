@@ -52,6 +52,14 @@ var DlrgTlaPrintApp = angular.module('DlrgTlaPrintApp', [])
 		return ctcl ? (ctcl.length>0) : false;
 	}
 
+	$scope.pad = function (num, size)
+	{
+		if (!size) {
+			size = 4;
+		}
+		return ('0000' + num).substr(-size);
+	}
+
 	if (window.parent.DlrgTla) {
 		DlrgTla = window.parent.DlrgTla;
 		$scope.DlrgTla = DlrgTla;
@@ -80,6 +88,21 @@ var DlrgTlaPrintApp = angular.module('DlrgTlaPrintApp', [])
 		courses.forEach(c => { 
 			if (c.sId == DlrgTla.sId && (c.begin >= begin && c.begin < end || c.end > begin && c.end <= end)) {
 				r.push(c); 
+			}
+		});
+		return r;
+	}
+})
+
+.filter('filterCourseParticipantsByDates', function($filter) 
+{
+	return function(courseparticipants, begin, end) {
+		var r = [];
+		var courses = $filter('filterCoursesByDates')(DlrgTla.db.courses, begin, end);
+		var coursesMap = courses.map(e => e.id);
+		courseparticipants.forEach(cp => { 
+			if (cp.sId == DlrgTla.sId && coursesMap.indexOf(cp.cId) >= 0) {
+				r.push(cp); 
 			}
 		});
 		return r;

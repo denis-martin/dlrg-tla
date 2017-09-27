@@ -5,17 +5,25 @@
 	<meta name="viewport" content="initial-scale=1, width=device-width"/>
 	<title>DLRG Ettlingen e.V. - Saison-Teilnehmerliste</title>
 	<script src="../bower_components/angular/angular.min.js"></script>
-	<script src="../src/print.js?r=1"></script>
+	<script src="../src/print.js?r=2"></script>
 	<link rel="stylesheet" href="../styles/Code39Azalea/Code39Azalea.css">
 	<link rel="stylesheet" href="../styles/print.css?r=4">
 </head>
 <body ng-controller="DlrgTlaPrintCtrl as DlrgTlaPrint" ui-i18n="de" ng-init="s = DlrgTla.getEntry('seasons', DlrgTla.sId)">
 	<div class="no-print control" style="margin-bottom: 10px">
 		<a href="#" ng-click="DlrgTlaPrint.print()" style="margin-right: 10px">Drucken</a>
+		<select ng-model="secondHalf">
+			<option ng-value="false">1. Saison-Hälfte</option>
+			<option ng-value="true">2. Saison-Hälfte</option>
+		</select>
 	</div>
 
 	<div class="page">
-		<span style="font-size: 150%; margin-right: 0.5em">Teilnehmerliste </span>
+		<span style="font-size: 150%; margin-right: 0.5em">
+			Teilnehmerliste
+			<span ng-if="!secondHalf">1. Saison-Hälfte</span>
+			<span ng-if="secondHalf">2. Saison-Hälfte</span>
+		</span>
 		<div style="float: right; font-size: 150%">
 			{{DlrgTla.getEntry('seasons', DlrgTla.sId).name}}
 			<img src="../img/dlrg-logo.svg" style="height: 1.2em; vertical-align: text-bottom">
@@ -24,22 +32,26 @@
 			<thead>
 				<tr>
 					<th>Teilnehmer</th>
+					<th>Teilnehmernummer</th>
 					<th>Geb.dat.</th>
 					<th>Kurs</th>
-					<th>Beginn</th>
 					<th>Gebühr</th>
 					<th>Bezahlt</th>
-					<th>Status</th>
 					<th>Notizen</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="cp in DlrgTla.db.courseparticipants | filterByCurrentSeason | orderBy: getParticipantName" 
+				<tr ng-repeat="cp in DlrgTla.db.courseparticipants | filterCourseParticipantsByDates : (secondHalf ? s.begin2 : s.begin) : (secondHalf ? s.end : s.begin2) | orderBy: getParticipantName" 
 					ng-init="p = DlrgTla.getEntry('participants', cp.pId); c = DlrgTla.getEntry('courses', cp.cId)">
 					<td class="narrow">{{p.data.lastName}}, {{p.data.firstName}}</td>
+					<td style="padding: 2pt; min-width: 160pt; white-space: nowrap;">
+						<div style="overflow: hidden; height: 20pt; width: 100%">
+							<span style="vertical-align: text-top; float: left; width: 8mm; text-align: right; font-size: 8pt">{{cp.pId}}&nbsp;</span>
+							<span class="barcode" style="vertical-align: text-top">*{{pad(cp.pId)}}*</span>&nbsp;
+						</div>
+					</td>
 					<td class="narrow">{{p.getSetBirthdate() | date:"dd.MM.yyyy"}}</td>
 					<td class="narrow">{{c.name}}</td>
-					<td class="narrow">{{c.getSetBegin() | date:"dd.MM.yyyy"}}</td>
 					<td class="narrow" style="text-align: right">
 						<span ng-if="cp.familyDiscount">(FR)</span>
 						<span ng-if="cp.charge">{{cp.charge}} &euro;&nbsp;</span>
@@ -49,13 +61,12 @@
 						<span ng-if="!cp.instructor">{{cp.getSetChargePayedAt() | date:"dd.MM.yyyy"}}</span>
 					</td>
 					<td class="narrow">
-						<span ng-if="cp.status">{{DlrgTla.courseStatus[cp.status]}}</span>
-					</td>
-					<td class="narrow">
+						<!-- 
 						{{p.data.phone}}<span ng-if="p.data.phone && (p.data.phoneWork || p.data.phoneMobile || p.data.altContact || cp.data.notes)">, </span>
 						{{p.data.phoneWork}}<span ng-if="p.data.phoneWork && (p.data.phoneMobile || p.data.altContact || cp.data.notes)">, </span>
 						{{p.data.phoneMobile}}<span ng-if="p.data.phoneMobile && (p.data.altContact || cp.data.notes)">, </span>
 						{{p.data.altContact}}<span ng-if="p.data.altContact && cp.data.notes">, </span>
+						-->
 						{{cp.data.notes}}
 					</td>
 				</tr>

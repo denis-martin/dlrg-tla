@@ -40,7 +40,7 @@
 		</div>
 
 		<div style="float: right">
-			<span class="small">{{cp.pId}} / {{cp.id}} / {{c.begin | date:"yyyy"}}</span>
+			<span class="small">{{cp.pId}} / {{c.begin | date:"yyyy"}}</span>
 		</div>
 
 		<div style="position: absolute">
@@ -64,7 +64,7 @@
 				<span class="large">{{p.data.lastName}}, {{p.data.firstName}}</span>
 			</div>
 			<div style="margin-bottom: 4mm">
-				<span class="barcode">*{{cp.pId}}*</span>
+				<span class="barcode">*{{pad(cp.pId)}}*</span>
 			</div>
 			<div ng-if="cp.charge">
 				Die Gebühren in Höhe von {{cp.charge}} € wurden <span ng-if="cp.data.chargePayedAt">am {{cp.data.chargePayedAt | date:"dd.MM.yyyy"}}</span> bezahlt.
