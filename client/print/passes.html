@@ -5,9 +5,9 @@
 	<meta name="viewport" content="initial-scale=1, width=device-width"/>
 	<title>DLRG Ettlingen e.V. - Übungsabend-/Kurskarte</title>
 	<script src="../bower_components/angular/angular.min.js"></script>
-	<script src="../src/print.js"></script>
+	<script src="../src/print.js?r=1"></script>
 	<link rel="stylesheet" href="../styles/Code39Azalea/Code39Azalea.css">
-	<link rel="stylesheet" href="../styles/print.css">
+	<link rel="stylesheet" href="../styles/print.css?r=1">
 </head>
 <body ng-controller="DlrgTlaPrintCtrl as DlrgTlaPrint" ui-i18n="de" ng-init="s = DlrgTla.getEntry('seasons', DlrgTla.sId)">
 	<div class="no-print control" style="margin-bottom: 10px">
@@ -40,7 +40,13 @@
 		</div>
 
 		<div style="float: right">
-			<span class="small">{{cp.pId}} / {{c.begin | date:"yyyy"}}</span>
+			<span class="small">{{cp.pId}} / {{c.begin | date:"yyyy"}}</span><br>
+		</div>
+
+		<div style="float: left">
+			<span style="font-size: 1px; color: white">
+				#dlrgtlacontrol#{ "cpId": {{cp.id}}, "firstName": "{{p.data.firstName}}", "lastName": "{{p.data.lastName}}", "course": "{{c.name}}", "seasonPass": {{c.seasonPass ? 'true' : 'false'}}, "email": "{{p.data.email}}<span ng-if="p.data.altEmail">,{{p.data.altEmail}}</span>" }#
+			</span>
 		</div>
 
 		<div style="position: absolute">
