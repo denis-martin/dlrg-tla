@@ -5,9 +5,10 @@
 	<meta name="viewport" content="initial-scale=1, width=device-width"/>
 	<title>DLRG Ettlingen e.V. - Saison-Teilnehmerliste</title>
 	<script src="../bower_components/angular/angular.min.js"></script>
-	<script src="../src/print.js?r=2"></script>
+	<script src="../bower_components/lodash/dist/lodash.min.js"></script>
+	<script src="../src/print.js?r=20171002"></script>
 	<link rel="stylesheet" href="../styles/Code39Azalea/Code39Azalea.css">
-	<link rel="stylesheet" href="../styles/print.css?r=4">
+	<link rel="stylesheet" href="../styles/print.css?r=20171002">
 </head>
 <body ng-controller="DlrgTlaPrintCtrl as DlrgTlaPrint" ui-i18n="de" ng-init="s = DlrgTla.getEntry('seasons', DlrgTla.sId)">
 	<div class="no-print control" style="margin-bottom: 10px">
@@ -18,8 +19,8 @@
 		</select>
 	</div>
 
-	<div class="page">
-		<span style="font-size: 150%; margin-right: 0.5em">
+	<div class="page" ng-repeat="pageNr in DlrgTla.db.courseparticipants | filterCourseParticipantsByDates : (secondHalf ? s.begin2 : s.begin) : (secondHalf ? s.end : s.begin2) | pagingPages:19">
+		<span style="float: left; font-size: 150%; margin-right: 0.5em">
 			Teilnehmerliste
 			<span ng-if="!secondHalf">1. Saison-Hälfte</span>
 			<span ng-if="secondHalf">2. Saison-Hälfte</span>
@@ -41,7 +42,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="cp in DlrgTla.db.courseparticipants | filterCourseParticipantsByDates : (secondHalf ? s.begin2 : s.begin) : (secondHalf ? s.end : s.begin2) | orderBy: getParticipantName" 
+				<tr ng-repeat="cp in DlrgTla.db.courseparticipants | filterCourseParticipantsByDates : (secondHalf ? s.begin2 : s.begin) : (secondHalf ? s.end : s.begin2) | orderBy: getParticipantName | pagingItems:19:pageNr" 
 					ng-init="p = DlrgTla.getEntry('participants', cp.pId); c = DlrgTla.getEntry('courses', cp.cId)">
 					<td class="narrow">{{p.data.lastName}}, {{p.data.firstName}}</td>
 					<td style="padding: 2pt; min-width: 160pt; white-space: nowrap;">
@@ -72,6 +73,9 @@
 				</tr>
 			</tbody>
 		</table>
+		<div style="width: 100%; text-align: center">
+			Seite {{pageNr}}
+		</div>
 	</div>
 </body>
 </html>

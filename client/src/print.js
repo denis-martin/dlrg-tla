@@ -128,6 +128,24 @@ var DlrgTlaPrintApp = angular.module('DlrgTlaPrintApp', [])
 	}
 })
 
+.filter('pagingPages', function() 
+{
+	return function(items, itemsPerPage) {
+		var numberOfpages = Math.ceil(items.length / itemsPerPage);
+		return _.range(1, numberOfpages+1);
+	}
+})
+
+.filter('pagingItems', function() 
+{
+	return function(items, itemsPerPage, pageNr) {
+		var numberOfpages = Math.ceil(items.length / itemsPerPage);
+		var r = items.slice((pageNr-1)*itemsPerPage, pageNr*itemsPerPage);
+		console.log((pageNr-1)*itemsPerPage, pageNr*itemsPerPage, r);
+		return items.slice((pageNr-1)*itemsPerPage, pageNr*itemsPerPage);
+	}
+})
+
 .filter('shorten', function() 
 {
 	return function(value, count) {
