@@ -49,6 +49,11 @@ var tableAcl = {
     courseparticipants: {
         write: [ "sId", "cId", "pId", "instructor", "charge", "chargePayedAt", "familyDiscount", "status", "passSent", "data_enc" ],
         methods: ["GET", "POST", "PUT", "DELETE"]
+    },
+
+    presence: {
+        write: [ "pId", "date", "presence" ],
+        methods: ["GET", "POST", "PUT", "DELETE"]
     }
 }
 
