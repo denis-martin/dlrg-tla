@@ -80,6 +80,7 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 		seasons: [],
 		courses: [],
 		courseparticipants: [],
+		presence: [],
 	};
 	
 	DlrgTla.refreshRates = {
@@ -92,11 +93,14 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 		seasons: 120000,
 		courses: 5000,
 		courseparticipants: 5000,
+		presence: 120000,
 	};
 
 	DlrgTla.cr = {
 		p: null,
 	}
+
+	DlrgTla.presenceCache = {};
 
 	DlrgTla.uiAuth = function() 
 	{
@@ -626,6 +630,31 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 		return DlrgTla._season;
 	}
 
+	DlrgTla.presence = function(date, pId)
+	{
+		console.log("presence", date, pId);
+		var ds = date.toISOString().split("T")[0];
+		if (!DlrgTla.presenceCache[ds]) {
+			DlrgTla.presenceCache[ds] = [];
+			DlrgTla.db.presence.forEach(r => {
+				if (r.date.split("T")[0] == ds) {
+					DlrgTla.presenceCache[ds].push(r);
+				}
+			});
+		}
+		console.log("presence", ds, DlrgTla.presenceCache[ds]);
+		var result = null;
+		DlrgTla.presenceCache[ds].some(r => {
+			if (r.pId == pId) {
+				result = r.presence;
+				return true;
+			}
+			return false;
+		});
+		console.log("presence", result);
+		return result;
+	}
+
 	DlrgTla.getEntriesFiltered = function(table, filterObj)
 	{
 		return $filter('filter')(DlrgTla.db[table], filterObj, true);
@@ -673,6 +702,7 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 						DlrgTla.periodicRefreshTable("qualifications");
 						DlrgTla.periodicRefreshTable("courseparticipants");
 						DlrgTla.periodicRefreshTable("registrations");
+						DlrgTla.periodicRefreshTable("presence");
 
 					} else if (table == "courseparticipants") {
 						var bp = {};

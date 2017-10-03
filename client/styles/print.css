@@ -102,6 +102,11 @@ tbody tr.rowSeparator { border-bottom: 1px solid black; }
 	margin: 1mm;
 }
 
+.tickBox .tick {
+	position: relative;
+	top: -4px;
+}
+
 .control {
 	font-family: Helvetica,Arial,sans-serif;
 	font-size: 10pt;

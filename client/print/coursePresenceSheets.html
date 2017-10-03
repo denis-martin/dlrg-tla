@@ -5,9 +5,9 @@
 	<meta name="viewport" content="initial-scale=1, width=device-width"/>
 	<title>DLRG Ettlingen e.V. - Anwesenheitsliste</title>
 	<script src="../bower_components/angular/angular.min.js"></script>
-	<script src="../src/print.js?r=20171002"></script>
+	<script src="../src/print.js?r=20171003"></script>
 	<link rel="stylesheet" href="../styles/Code39Azalea/Code39Azalea.css">
-	<link rel="stylesheet" href="../styles/print.css?r=20171002">
+	<link rel="stylesheet" href="../styles/print.css?r=20171003">
 </head>
 <body ng-controller="DlrgTlaPrintCtrl as DlrgTlaPrint" ui-i18n="de" ng-init="s = DlrgTla.getEntry('seasons', DlrgTla.sId)">
 	<div class="no-print control" style="margin-bottom: 10px">
@@ -61,11 +61,19 @@
 						<td class="narrow">Ausbilder</td>
 
 						<td ng-if="!secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays1()" style="text-align: center">
-							<div ng-if="d.training" class="tickBox"></div>
+							<div ng-if="d.training" class="tickBox">
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===0" class="tick" style="top: -3px">&ndash;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===1" class="tick">&#10004;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===2" class="tick" style="font-weight: bold; top: -2px">e</span>
+							</div>
 							<span ng-if="!d.training">&#8260;</span>
 						</td>
 						<td ng-if="secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays2()" style="text-align: center">
-							<div ng-if="d.training" class="tickBox"></div>
+							<div ng-if="d.training" class="tickBox">
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===0" class="tick" style="top: -3px">&ndash;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===1" class="tick">&#10004;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===2" class="tick" style="font-weight: bold; top: -2px">e</span>
+							</div>
 							<span ng-if="!d.training">&#8260;</span>
 						</td>
 						<td style="padding: 2pt">
@@ -96,11 +104,19 @@
 						</td>
 
 						<td ng-if="!secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays1()" style="text-align: center">
-							<div ng-if="d.training" class="tickBox"></div>
+							<div ng-if="d.training" class="tickBox">
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===0" class="tick" style="top: -3px">&ndash;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===1" class="tick">&#10004;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===2" class="tick" style="font-weight: bold; top: -2px">e</span>
+							</div>
 							<span ng-if="!d.training">&#8260;</span>
 						</td>
 						<td ng-if="secondHalf" ng-repeat="d in DlrgTla.getSeason().getDays2()" style="text-align: center">
-							<div ng-if="d.training" class="tickBox"></div>
+							<div ng-if="d.training" class="tickBox" style="vertical-align: top">
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===0" class="tick" style="top: -3px">&ndash;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===1" class="tick">&#10004;</span>
+								<span ng-if="DlrgTla.presence(d.date, cp.pId)===2" class="tick" style="font-weight: bold; top: -2px">e</span>
+							</div>
 							<span ng-if="!d.training">&#8260;</span>
 						</td>
 						<td style="padding: 2pt">
