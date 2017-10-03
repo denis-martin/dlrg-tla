@@ -632,27 +632,19 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 
 	DlrgTla.presence = function(date, pId)
 	{
-		console.log("presence", date, pId);
 		var ds = date.toISOString().split("T")[0];
 		if (!DlrgTla.presenceCache[ds]) {
-			DlrgTla.presenceCache[ds] = [];
+			DlrgTla.presenceCache[ds] = {};
 			DlrgTla.db.presence.forEach(r => {
 				if (r.date.split("T")[0] == ds) {
-					DlrgTla.presenceCache[ds].push(r);
+					DlrgTla.presenceCache[ds][r.pId] = r;
 				}
 			});
 		}
-		console.log("presence", ds, DlrgTla.presenceCache[ds]);
-		var result = null;
-		DlrgTla.presenceCache[ds].some(r => {
-			if (r.pId == pId) {
-				result = r.presence;
-				return true;
-			}
-			return false;
-		});
-		console.log("presence", result);
-		return result;
+		if (DlrgTla.presenceCache[ds].hasOwnProperty(pId)) {
+			return DlrgTla.presenceCache[ds][pId].presence;
+		}
+		return null;
 	}
 
 	DlrgTla.getEntriesFiltered = function(table, filterObj)
