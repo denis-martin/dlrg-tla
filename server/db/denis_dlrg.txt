@@ -18,4 +18,5 @@ ALTER TABLE dlrg_tla_qualifications AUTO_INCREMENT = 1;
 ALTER TABLE dlrg_tla_courseparticipants AUTO_INCREMENT = 1;
 ALTER TABLE dlrg_tla_participants AUTO_INCREMENT = 1;
 
-
+# add application user
+INSERT INTO dlrg_tla_users (name, passhash, email, active) VALUES ("<CN from certificate>", SHA2("<passphrase>", 256), "<email>", 1);

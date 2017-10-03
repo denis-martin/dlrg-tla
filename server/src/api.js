@@ -332,4 +332,109 @@ app.get('/api/calendars/:cal', requireLogin, function(req, res)
     request.end();
 });
 
+app.post('/api/presence', requireLogin, requireDbc, function(req, res)
+{
+    if (!(req.body && typeof req.body == "object")) {
+        res.status(400).send({ code: 400, error: errors.dbPostReq });
+        console.log(typeof req.body);
+
+    } else {
+        var now = new Date();
+        now.setMilliseconds(0);
+        var changedAt = now.toISOString();
+        var changedBy = req.user;
+        var r = req.body;
+
+        var queryStr =
+            "INSERT INTO dlrg_tla_presence (date, pId, presence, changedAt, changedBy) VALUES (" + 
+                "\"" + r.date + "\", " + 
+                r.pId + ", " +
+                r.presence + ", " +
+                "\"" + changedAt + "\", " +
+                "\"" + changedBy + "\") " + 
+            "ON DUPLICATE KEY UPDATE " + 
+                "presence=" + r.presence + ", " + 
+                "changedAt=\"" + changedAt + "\", " + 
+                "changedBy=\"" + changedBy + "\";\n";
+        dbc.query(queryStr,
+            function(err, info) {
+                if (err) {
+                    logger.info(errors.dbPost, err);
+                    res.status(500).send({ code: 500, error: errors.dbPost });
+
+                } else {
+                    res.status(200).send({
+                        changedBy: changedBy, 
+                        changedAt: changedAt 
+                    });
+                }
+            }
+        );
+    };
+});
+
+app.post('/api/presence/upload', requireLogin, requireDbc, function(req, res)
+{
+    if (!(req.body && typeof req.body == "object")) {
+        res.status(400).send({ code: 400, error: errors.dbPostReq });
+        console.log(typeof req.body);
+
+    } else {
+        var now = new Date();
+        now.setMilliseconds(0);
+        var changedAt = now.toISOString();
+        var changedBy = req.user;
+        var successCount = 0;
+        var errorCount = 0;
+
+        req.body.forEach(r => {
+            console.log(JSON.stringify(r));
+
+            var queryStr =
+                "INSERT INTO dlrg_tla_presence (date, pId, presence, changedAt, changedBy) VALUES (" + 
+                    "\"" + r.date + "\", " + 
+                    r.pId + ", " +
+                    r.presence + ", " +
+                    "\"" + changedAt + "\", " +
+                    "\"" + changedBy + "\") " + 
+                "ON DUPLICATE KEY UPDATE " + 
+                    "presence=" + r.presence + ", " + 
+                    "changedAt=\"" + changedAt + "\", " + 
+                    "changedBy=\"" + changedBy + "\";\n";
+            dbc.query(queryStr,
+                function(err, info) {
+                    if (err) {
+                        logger.info(errors.dbPost, err);
+
+                        errorCount = errorCount + 1;
+                        if (errorCount + successCount == req.body.length) {
+                            if (errorCount == 0) {
+                                res.status(200).send({
+                                    changedBy: changedBy, 
+                                    changedAt: changedAt 
+                                });
+                            } else {
+                                res.status(500).send({ code: 500, error: errors.dbPost });
+                            }
+                        }
+    
+                    } else {
+                        successCount = successCount + 1;
+                        if (errorCount + successCount == req.body.length) {
+                            if (errorCount == 0) {
+                                res.status(200).send({
+                                    changedBy: changedBy, 
+                                    changedAt: changedAt 
+                                });
+                            } else {
+                                res.status(500).send({ code: 500, error: errors.dbPost });
+                            }
+                        }
+                    }
+                }
+            );
+        });
+    }
+});
+
 } // exports
