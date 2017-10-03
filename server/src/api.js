@@ -123,7 +123,7 @@ app.post('/api/login', requireDbc, function(req, res)
 	var user = extractUser(clientCert);
 	logger.info("post login name:", user);
 
-    dbc.query('SELECT * FROM dlrg_tla_users WHERE name="' + user + '" AND passhash=SHA("' + req.body.passphrase + '");', function(err, rows, fields) {
+    dbc.query('SELECT * FROM dlrg_tla_users WHERE name="' + user + '" AND passhash=SHA2("' + req.body.passphrase + '", 256);', function(err, rows, fields) {
         if (err) {
             logger.info(err);
             res.status(500).send({ code: 500, error: errors.dbGet });
