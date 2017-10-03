@@ -135,8 +135,10 @@ CREATE TABLE `dlrg_tla_presence` (
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_presence_pId` FOREIGN KEY (`id`) REFERENCES `dlrg_tla_participants` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  UNIQUE KEY `Presence` (`date`,`pId`),
+  KEY `fk_presence_pId_idx` (`pId`),
+  CONSTRAINT `fk_presence_pId` FOREIGN KEY (`pId`) REFERENCES `dlrg_tla_participants` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -228,7 +230,7 @@ CREATE TABLE `dlrg_tla_users` (
   `email` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -240,4 +242,4 @@ CREATE TABLE `dlrg_tla_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-02 17:02:09
+-- Dump completed on 2017-10-03 20:38:28
