@@ -85,6 +85,8 @@ CREATE TABLE `dlrg_tla_coursetypechecklists` (
   `ctId` int(11) NOT NULL,
   `item` text,
   `order` int(11) NOT NULL,
+  `changedAt` datetime DEFAULT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -242,4 +244,4 @@ CREATE TABLE `dlrg_tla_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-03 20:38:28
+-- Dump completed on 2017-10-04 21:06:51
