@@ -679,6 +679,9 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 				if (!DlrgTla.db[table] || DlrgTla.db[table].length == 0) {
 					// initial fetch of data
 					DlrgTla.db[table] = response.data;
+					if (DlrgTla.uiGrids[table]) {
+						DlrgTla.uiGrids[table].grid.options.data = DlrgTla.db[table];
+					}
 					DlrgTla.db[table].forEach(function(element) {
 						DlrgTla.resetData(element, table);
 					});
@@ -704,6 +707,7 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 							}
 						});
 						DlrgTla.calendar.setBirthdates(bp);
+						DlrgTla.setSeason(DlrgTla.sId);
 
 					} else if (table == "seasons") {
 						if (!DlrgTla.sId) {
@@ -717,6 +721,9 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 							DlrgTla.setSeason(DlrgTla.sId);
 							DlrgTla.periodicRefreshTable("courses");
 						}
+					} else if (table == "courses") {
+						DlrgTla.setSeason(DlrgTla.sId);
+
 					}
 				} else {
 					// incremental update
@@ -794,11 +801,29 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 
 	DlrgTla.setSeason = function(sId)
 	{
+		if (DlrgTla.db.seasons.length == 0) {
+			return;
+		}
+		if (!sId) {
+			var now = new Date();
+			for (var i = 0; i < DlrgTla.db.seasons.length; i++) {
+				if (now <= DlrgTla.db.seasons[i].getSetEnd()) { // assuming chronological entries
+					sId = DlrgTla.db.seasons[i].id;
+					break;
+				}
+			}
+			if (!sId) {
+				// use last season
+				sId = DlrgTla.db.seasons[DlrgTla.db.seasons.length-1].id;
+			}
+		}
 		DlrgTla.sId = sId;
-		if (DlrgTla.sId) {
+		if (ctrlScopes.courses.gridApi.grid.columns.length > 0) {
 			ctrlScopes.courses.gridApi.grid.columns[0].filters[0].term = DlrgTla.getSeason().name;
-			ctrlScopes.courses.gridApiCp.grid.columns[0].filters[0].term = DlrgTla.getSeason().name;
 			ctrlScopes.courses.gridApi.grid.refresh();
+		}
+		if (ctrlScopes.courses.gridApiCp.grid.columns.length > 0) {
+			ctrlScopes.courses.gridApiCp.grid.columns[0].filters[0].term = DlrgTla.getSeason().name;
 			ctrlScopes.courses.gridApiCp.grid.refresh();
 		}
 	}

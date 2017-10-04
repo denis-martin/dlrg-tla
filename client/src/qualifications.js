@@ -42,7 +42,7 @@ DlrgTlaApp.controller('QualificationsCtrl', ['$scope', '$uibModal', 'uiGridConst
 			{ name: 'Registriernummer', field: 'data.regno', width: 130 },
 			{ name: 'Notizen', field: 'data.notes' }
 		],
-		data: 'DlrgTla.db.qualifications'
+		data: DlrgTla.db[$scope.table]
 	};
 
 	$scope.gridOptions.onRegisterApi = function(gridApi)

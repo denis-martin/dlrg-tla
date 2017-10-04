@@ -57,7 +57,7 @@ DlrgTlaApp.controller('CoursesCtrl', ['$scope', '$uibModal', 'uiGridConstants', 
 			//{ name: 'Kosten', field: 'charge', 
 			//	cellTemplate: '<div class="ui-grid-cell-contents">{{grid.getCellValue(row, col)}} <span ng-if="grid.getCellValue(row, col)"> €</span><span ng-if="row.entity.chargeNonMember"> ({{row.entity.chargeNonMember}} €)</span></div>' },
 		],
-		data: 'DlrgTla.db.' + $scope.table
+		data: DlrgTla.db[$scope.table]
 	};
 
 	$scope.gridOptions.onRegisterApi = function(gridApi)
@@ -129,7 +129,7 @@ DlrgTlaApp.controller('CoursesCtrl', ['$scope', '$uibModal', 'uiGridConstants', 
 			},
 			{ name: 'Notizen', field: 'data.notes' },
 		],
-		data: 'DlrgTla.db.courseparticipants'
+		data: DlrgTla.db.courseparticipants
 	};
 
 	$scope.gridOptionsCp.onRegisterApi = function(gridApi)
@@ -156,6 +156,8 @@ DlrgTlaApp.controller('CoursesCtrl', ['$scope', '$uibModal', 'uiGridConstants', 
 
 	$scope.getMailAdresses = function()
 	{
+		if (!$scope.gridApiCp) return "";
+
 		var filtered = $scope.gridApiCp.core.getVisibleRows($scope.gridApiCp.grid);
 		var entities = _.map(filtered, 'entity'); // Entities extracted from the GridRow array
 		var mailStr = "";

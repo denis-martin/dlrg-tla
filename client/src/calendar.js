@@ -55,6 +55,11 @@ DlrgTlaApp.controller('CalendarCtrl', ['$scope', '$http', '$timeout', 'uiCalenda
 			function(res) { // success
 				uiCalendarConfig.calendars.calendar.fullCalendar('removeEventSource', $scope.events[name]);
 				$scope.events[name] = fc_events(res.data, { className: "cal" + name });
+				$scope.events[name].forEach(e => {
+					if (!e.allDay && e.start.getHours() == 0 && e.start.getMinutes() == 0 && e.end.getHours() == 0 && e.end.getMinutes() == 0) {
+						e.allDay = true;
+					}
+				});
 				if ($scope.show[name]) {
 					uiCalendarConfig.calendars.calendar.fullCalendar('addEventSource', $scope.events[name]);
 				}

@@ -56,7 +56,7 @@ DlrgTlaApp.controller('RegistrationsCtrl', ['$scope', '$uibModal', 'uiGridConsta
 			{ name: 'Wunsch', field: 'data.request', width: 120 },
 			{ name: 'Notizen', field: 'data.notes' }
 		],
-		data: 'DlrgTla.db.registrations'
+		data: DlrgTla.db[$scope.table]
 	};
 
 	$scope.gridOptions.onRegisterApi = function(gridApi)
@@ -72,6 +72,8 @@ DlrgTlaApp.controller('RegistrationsCtrl', ['$scope', '$uibModal', 'uiGridConsta
 
 	$scope.getMailAdresses = function()
 	{
+		if (!$scope.gridApi) return "";
+
 		var filtered = $scope.gridApi.core.getVisibleRows($scope.gridApi.grid);
 		var entities = _.map(filtered, 'entity'); // Entities extracted from the GridRow array
 		var mailStr = "";

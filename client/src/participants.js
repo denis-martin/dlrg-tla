@@ -30,14 +30,13 @@ DlrgTlaApp.controller('ParticipantsCtrl', ['$scope', '$uibModal', '$timeout', 'u
 			{ name: 'Straße', field: 'data.street', width: 120 },
 			{ name: 'Ort', field: 'data.city' }
 		],
-		data: 'DlrgTla.db.participants'
+		data: DlrgTla.db[$scope.table]
 	};
 
 	$scope.gridOptions.onRegisterApi = function(gridApi)
 	{
 		DlrgTla.uiGrids[$scope.table] = gridApi;
 		$scope.gridApi = gridApi;
-		console.log(gridApi);
 		if (!$scope.cr) {
 			$timeout(function() { $scope.gridApi.selection.selectRowByVisibleIndex(0); }, 0);
 		} else {
