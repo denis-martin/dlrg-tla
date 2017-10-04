@@ -148,7 +148,7 @@
 									<th>Name</th>
 									<!--th>Geb.</th-->
 
-									<th ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: order" style="text-align: center">
+									<th ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: 'order'" style="text-align: center">
 										{{$index+1}}.
 									</th>
 								</tr>
@@ -160,7 +160,7 @@
 									<td class="narrow">{{p.data.lastName}}, {{p.data.firstName}}</td>
 									<!-- td class="narrow">{{p.data.birthdate | date:"dd.MM.yyyy"}}</td -->
 									
-									<td ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: order">
+									<td ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: 'order'">
 										<div style="width: 10mm; height: 9mm"></div>
 									</td>
 								</tr>
@@ -173,7 +173,7 @@
 							<p style="font-weight: bold">{{c.ctId | dbfield:"coursetypes":"prereq"}}</p>
 							Leistungen:
 							<ol style="padding-left: 5mm">
-								<li ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: order">
+								<li ng-repeat="cti in DlrgTla.db.coursetypechecklists | filter: { ctId: c.ctId } | orderBy: 'order'">
 									{{cti.item}}
 								</li>
 							</ol>
