@@ -27,8 +27,8 @@ var tableAcl = {
     },
 
     coursetypechecklists: {
-        write: [  ],
-        methods: ["GET"] //, "POST", "PUT", "DELETE"]
+        write: [ "ctId", "item", "order" ],
+        methods: ["GET", "POST", "PUT", "DELETE"]
     },
 
     qualificationtypes: {

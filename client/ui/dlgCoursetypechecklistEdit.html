@@ -1,0 +1,66 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">{{modalTitle}}</h3>
+	<div style="float: right">
+		<button class="btn" type="button" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span></button>
+	</div>
+</div>
+<div class="modal-body" id="modal-body">
+
+<form>
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-7">
+			Leistungen für diesen Kurs:
+			<table class="coursetypechecklistEditTable">
+				<tbody>
+					<tr ng-repeat="i in DlrgTla.db.coursetypechecklists | filter:{ctId:(item.ctId?item.ctId:0)} | orderBy:'order'" ng-class="{coursetypechecklistSelected: item.id==i.id}">
+						<td style="text-align: right">{{i.order}}.</td>
+						<td>{{i.item}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-sm-5">
+			<div class="row">
+				<div class="col-sm-12">
+					<label for="coursetype">Kurstyp</label>
+					<select class="form-control" id="coursetype" ng-model="item.ctId">
+						<option ng-repeat="option in DlrgTla.db.coursetypes" ng-value="option.id">{{option.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<label for="item">Beschreibung der Leistung</label>
+					<textarea class="form-control" id="item" ng-model="item.item" rows="5"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<label for="order">Sortierung</label>
+					<input type="number" class="form-control" id="order" ng-model="item.order">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="item.id && item.changedAt">
+		<div class="col-sm-12">
+			<span class="fieldLabel">Letzte Änderung: {{item.changedAt | date:"dd.MM.yyyy HH:mm"}} ({{item.changedBy}})</span>
+		</div>
+	</div>
+</div>
+
+</form>
+
+</div>
+<div class="modal-footer">
+	<div style="float: left">
+		<button ng-if="item.id" class="btn btn-danger" type="button" ng-click="delete()">Löschen</button>
+	</div>
+	<span ng-if="DlrgTla.thinking"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></span>
+	<span ng-if="commitFailed" style="color: red"><span class="glyphicon glyphicon-remove"></span> Fehlgeschlagen&nbsp;</span>
+	<span ng-if="missingCourse" style="color: red"><span class="glyphicon glyphicon-remove"></span> Kurs fehlt&nbsp;</span>
+    <button class="btn btn-primary" type="button" ng-click="ok()">Speichern</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
+</div>

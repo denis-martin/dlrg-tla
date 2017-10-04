@@ -1,0 +1,26 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<span class="glyphicon glyphicon-ok-circle"></span> Leistungen
+		<div style="float: right">
+			<a href="#" ng-click="DlrgTla.uiEditCoursetypechecklist(null, cr.ctId, cr.order+10)">
+				<span class="glyphicon glyphicon-file"></span> Neu
+			</a>&nbsp;&nbsp;
+			<a href="#" ng-show="cr" ng-click="DlrgTla.uiEditCoursetypechecklist(null, null, null, cr)">
+				<span class="glyphicon glyphicon-duplicate"></span> Neu mit Kopie
+			</a>&nbsp;&nbsp;
+			<a href="#" ng-show="cr" ng-click="DlrgTla.uiEditCoursetypechecklist(cr)">
+				<span class="glyphicon glyphicon-pencil"></span> Bearbeiten
+			</a>
+		</div>
+	</div>
+	<div class="panel-body container" >
+		<div class="row">
+			<div class="col-sm-12">
+				<div ui-grid="gridOptions" ui-grid-selection class="dlrgtlaGrid coursetypechecklistsGrid"></div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer" ng-ig="isActive()">
+		{{gridApi.core.getVisibleRows(gridApi.grid).length}} Leistungen
+	</div>
+</div>

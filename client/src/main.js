@@ -173,6 +173,37 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 		});
 	}
 
+	DlrgTla.uiEditCoursetypechecklist = function(item, ctId, order, copyFromItem) 
+	{
+		if (typeof item == "number") {
+			item = DlrgTla.getEntry("coursetypechecklists", item);
+		}
+
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'ui/dlgCoursetypechecklistEdit.html',
+			controller: 'DlgCoursetypechecklistEditCtrl',
+			size: 'lg', // 'lg', 'sm'
+			resolve: {
+				item: function () { return item; },
+				ctId: function () { return ctId; },
+				order: function () { return order; },
+				copyFromItem: function () { return copyFromItem; },
+			}
+		});
+
+		modalInstance.result.then(function (res) {
+			// ok
+			console.log('uiEditCoursetypechecklist ', res);
+		}, function () {
+			// cancel
+			if (item) {
+				DlrgTla.resetData(item, "coursetypechecklists");
+			}
+			console.log('uiEditCoursetypechecklist cancel');
+		});
+	}
+
 	DlrgTla.uiEditRegistration = function(registration, pId) 
 	{
 		if (typeof registration == "number") {

@@ -25,19 +25,21 @@
 	<script src="bower_components/angular-ui-grid/ui-grid.min.js?r=20171004"></script>
 	<script src="bower_components/angular-ui-calendar/src/calendar.js"></script>
 
-	<script src="src/main.js?r=20171004"></script>
+	<script src="src/main.js?r=20171004a"></script>
 	<script src="src/participants.js?r=20171004"></script>
 	<script src="src/registrations.js?r=20171004"></script>
 	<script src="src/qualifications.js?r=20171004"></script>
-	<script src="src/seasons.js"></script>
+	<script src="src/seasons.js?r=20171004"></script>
 	<script src="src/courses.js?r=20171004"></script>
-	<script src="src/calendar.js"></script>
-	<script src="src/import.js"></script>
+	<script src="src/coursetypechecklists.js?r=20171004"></script>
+	<script src="src/calendar.js?r=20171004"></script>
+	<script src="src/import.js?r=20171004"></script>
 
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="bower_components/angular-ui-grid/ui-grid.min.css">
 	<link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.min.css">
-	<link rel="stylesheet" href="styles/default.css">
+
+	<link rel="stylesheet" href="styles/default.css?r=20171004">
 </head>
 <body ng-controller="DlrgTlaMainCtrl as DlrgTla" ui-i18n="de">
 	<div ng-if="DlrgTla.thinking" class="thinking"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> {{DlrgTla.thinking}}</div>
@@ -52,9 +54,10 @@
 						</a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li><a href="#" ng-click="DlrgTla.uiSwitchPanel('calendar')" ng-class="DlrgTla.panel=='calendar' ? 'active' : ''">Kalender</a></li>
+						<li><a href="#" ng-click="DlrgTla.uiSwitchPanel('coursetypechecklists')" ng-class="DlrgTla.panel=='coursetypechecklists' ? 'active' : ''">Leistungen</a></li>
+						<li class="divider"></li>
 						<li><a href="#" ng-click="DlrgTla.uiEditSeason(DlrgTla.sId)">Saison bearbeiten...</a></li>
 						<li><a href="#" ng-click="DlrgTla.uiEditSeason()">Neue Saison...</a></li>
-						<li class="divider"></li>
 						<li ng-repeat="r in DlrgTla.db.seasons | orderBy:'begin':true" ng-class="{ active: DlrgTla.sId===r.id }">
 							<a href="#" ng-click="DlrgTla.setSeason(r.id)">{{r.name}}</a>
 						</li>
@@ -111,6 +114,7 @@
 	<div ng-show="DlrgTla.panel=='registrations'" ng-include src="'ui/registrations.html'" ng-controller="RegistrationsCtrl"></div>
 	<div ng-show="DlrgTla.panel=='qualifications'" ng-include src="'ui/qualifications.html'" ng-controller="QualificationsCtrl"></div>
 	<div ng-show="DlrgTla.panel=='courses'" ng-include src="'ui/courses.html'" ng-controller="CoursesCtrl"></div>
+	<div ng-show="DlrgTla.panel=='coursetypechecklists'" ng-include src="'ui/coursetypechecklists.html'" ng-controller="CoursetypechecklistsCtrl"></div>
 	<div ng-show="DlrgTla.panel=='calendar'" ng-include src="'ui/calendar.html'" ng-controller="CalendarCtrl"></div>
 	<div ng-show="DlrgTla.panel=='import'" ng-include src="'ui/import.html'" ng-controller="ImportCtrl"></div>
 	<div ng-if="DlrgTla.panel=='printSeasonParticipants'">

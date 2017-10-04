@@ -181,3 +181,17 @@ select.ui-grid-filter-select {
 .narrow {
 	font-family: Arial Narrow;
 }
+
+.coursetypechecklistEditTable {
+	font-size: 80%;
+	margin-top: 5px;
+}
+
+.coursetypechecklistEditTable td {
+	vertical-align: top;
+	padding: 2px;
+}
+
+.coursetypechecklistSelected {
+	font-weight: bold;
+}
