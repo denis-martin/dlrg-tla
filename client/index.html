@@ -102,6 +102,9 @@
 						<li ng-class="DlrgTla.panel=='printSeasonParticipants' ? 'active' : ''">
 							<a href="#" ng-click="DlrgTla.uiSwitchPanel('printSeasonParticipants')">Teilnehmerliste (Saison)</a>
 						</li>
+						<li ng-class="DlrgTla.panel=='printRegistrations' ? 'active' : ''">
+							<a href="#" ng-click="DlrgTla.uiSwitchPanel('printRegistrations')">Anmeldungen/Warteliste</a>
+						</li>
 					</ul>
 				</li>
 			</ul>
@@ -138,6 +141,14 @@
 			<div class="panel-heading"><span class="glyphicon glyphicon-print"></span> Übungsabend-/Kurskarten</div>
 			<div class="panel-body">
 				<iframe src="print/passes.html" width="100%" height="600px" style="border: none"></iframe>
+			</div>
+		</div>
+	</div>
+	<div ng-if="DlrgTla.panel=='printRegistrations'">
+		<div class="panel panel-primary">
+			<div class="panel-heading"><span class="glyphicon glyphicon-print"></span> Anmeldungen/Warteliste</div>
+			<div class="panel-body">
+				<iframe src="print/registrations.html" width="100%" height="600px" style="border: none"></iframe>
 			</div>
 		</div>
 	</div>

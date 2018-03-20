@@ -128,6 +128,18 @@ var DlrgTlaPrintApp = angular.module('DlrgTlaPrintApp', [])
 	}
 })
 
+.filter('age', function() 
+{
+	return function(value) {
+		if (!value) {
+			return 0;
+		}
+		var d = Date.now() - new Date(value);
+		var age = new Date(d);
+		return ~~Math.abs(((age.getUTCFullYear() - 1970) + (age.getUTCMonth()+1)/12) * 10) / 10;
+	}
+})
+
 .filter('pagingPages', function() 
 {
 	return function(items, itemsPerPage) {
