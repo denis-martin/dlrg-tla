@@ -15,7 +15,7 @@
 		<a href="#" ng-click="DlrgTlaPrint.print()" style="margin-right: 10px">Drucken</a>
 	</div>
 
-	<div class="page" ng-repeat="pageNr in DlrgTla.db.registrations | pagingPages:19">
+	<div class="page" ng-repeat="pageNr in DlrgTla.db.registrations | pagingPages:26">
 		<span style="float: left; font-size: 150%; margin-right: 0.5em">
 			Anmelde-/Warteliste
 		</span>
@@ -35,7 +35,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="r in DlrgTla.db.registrations | orderBy:['ctId', getParticipantName] | pagingItems:19:pageNr" 
+				<tr ng-repeat="r in DlrgTla.db.registrations | orderBy:['ctId', getParticipantName] | pagingItems:26:pageNr" 
 					ng-init="p = DlrgTla.getEntry('participants', r.pId); ct = DlrgTla.getEntry('coursetypes', r.ctId)">
 					<td class="narrow">{{ct.name}}</td>
 					<td class="narrow">{{r.getSetDate() | date:"dd.MM.yyyy"}} ({{r.getSetDate() | age}})</td>
