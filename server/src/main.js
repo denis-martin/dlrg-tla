@@ -69,7 +69,7 @@ function extractUser (clientCert)
 			clientCert = "";
 		}
 	}
-	var sl = clientCert.match(/\/CN=([a-z,A-Z,ä,ö,ü,ß,Ä,Ö,Ü, ]*)/);
+	var sl = clientCert.match(/CN=([a-zA-ZäöüßÄÖÜ ]*)/);
 	if (sl && sl.length > 1) {
 		return sl[1];
 	}
@@ -86,7 +86,7 @@ function requireLogin (req, res, next)
 			//logger.info("requireLogin name:", user);
 			res.status(401).send({ code: 401, user: user });
 		} else {
-			logger.warning("requireLogin: cannot extract user from " + clientCert);
+			logger.error("requireLogin: cannot extract user from " + clientCert);
 			res.status(401).send({ code: 401 });
 		}
 	} else {
