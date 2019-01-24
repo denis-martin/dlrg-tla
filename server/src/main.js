@@ -1,19 +1,29 @@
 var helmet = require('helmet');
 var session = require('client-sessions');
 var express = require('express');
+var cors = require('cors');
 var bodyParser = require('body-parser')
 var logger = require('./logger');
 var config = require('./config.js');
 
 var app = express();
-var engineeringMode = true;
 
 app.use(helmet());
+
+var corsOptions = {
+	origin: 'http://localhost:4200',
+	//credentials: true
+}
+
+if (config.engineeringMode) {
+	app.use(cors(corsOptions));
+}
 
 app.use(function(req, res, next) 
 {
 	if (req.path.substr(0, 4) == "/api") {
 		res.contentType('application/json');
+		res.headers
 	}
 	if (req.method == "POST" && req.headers["content-type"].substr(0, 16) != "application/json") {
 		logger.info("Returning 415, content-type:", req.headers["content-type"]);
@@ -63,7 +73,7 @@ app.use(function(req, res, next)
 function extractUser (clientCert)
 {
 	if (!clientCert) {
-		if (engineeringMode) {
+		if (config.engineeringMode) {
 			clientCert = "/CN=Administrator";
 		} else {
 			clientCert = "";
