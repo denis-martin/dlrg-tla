@@ -1,22 +1,30 @@
 <div class="login-page" [@routerTransition]>
-    <div class="row justify-content-md-center">
-        <div class="col-md-4">
-            <img src="assets/images/logo.png" width="150px" class="user-avatar" />
-            <h1>SB Admin BS4 Angular7</h1>
-            <form role="form">
-                <div class="form-content">
-                    <div class="form-group">
-                        <input type="text" ng-model="name" class="form-control input-underline input-lg" id="" placeholder="{{ 'Email' | translate }}">
-                    </div>
+    <form (ngSubmit)="ok()" #loginForm="ngForm">
+        <div class="row justify-content-md-center">
+            <div class="col-md-4">
+                <img src="assets/images/logo.png" width="150px" class="user-avatar" />
+                <h1>DLRG Ettlingen e.V.</h1>
+                <form role="form">
+                    <div class="form-content">
+                        <h2>Hallo, {{ getUserShortName() }}!</h2>
 
-                    <div class="form-group">
-                        <input type="password" class="form-control input-underline input-lg" id="" placeholder="{{ 'Password' | translate }}">
+                        <div class="form-group" *ngIf="ds.needLogin">
+                            <input type="password" class="form-control input-underline input-lg" placeholder="Passwort"
+                                [(ngModel)]="password" id="password" name="password">
+                        </div>
+
+                        <div class="form-group" *ngIf="ds.needDataKey">
+                            <input type="password" class="form-control input-underline input-lg" placeholder="Datenschlüssel"
+                                [(ngModel)]="dataKey" id="dataKey" name="dataKey">
+                        </div>
                     </div>
-                </div>
-                <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin()">{{ 'Log in' | translate }}</a>
-                &nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a>
-            </form>
+                    <button class="btn rounded-btn" [routerLink]="['/blank-page']" (click)="login()">Anmelden</button>
+                    <div class="mt-4" *ngIf="lastError">
+                        Fehler:<br>
+                        <span>{{ lastError }}</span>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
