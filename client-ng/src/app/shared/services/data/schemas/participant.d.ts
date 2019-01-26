@@ -13,7 +13,7 @@ export interface IParticipant {
   data: {
     lastName: string;
     firstName: string;
-    birthdate?: string;
+    birthdate?: string | null;
     sex?: string | null;
     street?: string | null;
     zipCode?: string | null;

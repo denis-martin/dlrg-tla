@@ -17,15 +17,16 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { timer } from 'rxjs';
+import { timer, Subscription } from 'rxjs';
 
 import { AES, SHA256, enc } from 'crypto-js';
 import * as Ajv from 'ajv';
 
 import * as SchemaParticipant from './schemas/participant.json';
+import * as SchemaRegistration from './schemas/registration.json';
 
-import { Test } from './schemas/test';
 import { IParticipant } from './schemas/participant';
+import { IRegistration } from './schemas/registration';
 
 const apiBasePath = "http://localhost:3100/";
 const ciphertest = "1234567890";
@@ -36,7 +37,7 @@ class TableConnector
 	private isSyncing = false;
 	private autoSync = false;
 	private validate: any;
-	private timerSub: any;
+	private timerSub: Subscription;
 
 	constructor(private table: string, private schema: any, private refreshRate: number, private ds: DataService) 
 	{
@@ -88,6 +89,11 @@ class TableConnector
 			});
 	}
 
+	stopSync()
+	{
+		this.timerSub.unsubscribe();
+	}
+
 	private handleError(response): void
 	{
 		console.error("HTTP request failed", response);
@@ -128,14 +134,43 @@ export class DataService
 	public dataKeyHash: string;
 
 	readonly schemas = {
-		participant: SchemaParticipant.default
-	}
-
-	tableConnectors = {
-		participants: new TableConnector('participants', this.schemas.participant, 5000, this)
+		participant: SchemaParticipant.default,
+		registration: SchemaRegistration.default
 	}
 
 	participants: { [k: number]: IParticipant } = {}
+	registrations: { [k: number]: IRegistration } = {}
+
+	tableConnectors = {
+		participants: new TableConnector('participants', this.schemas.participant, 5000, this),
+		registrations: new TableConnector('registrations', this.schemas.registration, 5000, this)
+	}
+
+	/*
+	db = {
+		participants: [],
+		registrations: [],
+		qualifications: [],
+		coursetypes: [],
+		coursetypechecklists: [],
+		qualificationtypes: [],
+		seasons: [],
+		courses: [],
+		courseparticipants: [],
+	};
+
+	private refreshRates = {
+		participants: 5000,
+		registrations: 5000,
+		qualifications: 5000,
+		coursetypes: 120000,
+		coursetypechecklists: 120000,
+		qualificationtypes: 120000,
+		seasons: 120000,
+		courses: 5000,
+		courseparticipants: 5000,
+	};
+	*/
 
 	constructor(public http: HttpClient)
 	{

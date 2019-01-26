@@ -1,0 +1,55 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/registration.json",
+	"title": "IRegistration",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_enc": {
+			"type": "string"
+		},
+		"data": {
+			"type": "object",
+			"properties": {
+				"date": {
+					"type": "string",
+					"format": "date"
+				},
+				"notes": {
+					"type": [ "string", "null" ]
+				},
+				"request": {
+					"type": [ "string", "null" ]
+				}
+			},
+			"required": [
+				"date"
+			],
+			"additionalProperties": false
+		},
+		"pId": {
+			"type": "integer"
+		},
+		"ctId": {
+			"type": "integer"
+		}
+	},
+	"required": [
+		"id",
+		"changedBy",
+		"changedAt",
+		"data_enc",
+		"data",
+		"pId",
+		"ctId"
+	],
+	"additionalProperties": false
+}
