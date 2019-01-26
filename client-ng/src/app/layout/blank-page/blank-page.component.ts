@@ -11,7 +11,6 @@ export class BlankPageComponent implements OnInit
     constructor(public ds: DataService) {}
 
     ngOnInit() {
-        this.ds.schemas['bla'] = 'test';
-        this.ds.schemas.test.$id = 'test';
+        
     }
 }

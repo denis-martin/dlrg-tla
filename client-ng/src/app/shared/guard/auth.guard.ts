@@ -13,9 +13,12 @@ export class AuthGuard implements CanActivate
 		if (this.ds.needLogin || this.ds.needDataKey) {
 			return new Promise((resolve, reject) => {
 				this.ds.isLoggedIn()
-					.then(() => resolve(true))
+					.then(() => {
+						resolve(true);
+						this.router.navigate(['/']);
+					})
 					.catch(() => {
-						reject(false);
+						resolve(false);
 						this.router.navigate(['/login']);
 					});
 			});

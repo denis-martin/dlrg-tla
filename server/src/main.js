@@ -12,7 +12,7 @@ app.use(helmet());
 
 var corsOptions = {
 	origin: 'http://localhost:4200',
-	//credentials: true
+	credentials: true
 }
 
 if (config.engineeringMode) {

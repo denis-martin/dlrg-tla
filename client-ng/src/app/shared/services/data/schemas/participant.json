@@ -1,0 +1,96 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/participant.json",
+	"title": "IParticipant",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_enc": {
+			"type": "string"
+		},
+		"data": {
+			"type": "object",
+			"properties": {
+				"lastName": {
+					"type": "string"
+				},
+				"firstName": {
+					"type": "string"
+				},
+				"birthdate": {
+					"type": [ "string", "null" ],
+					"format": "date"
+				},
+				"sex": {
+					"type": [ "string", "null" ]
+				},
+				"street": {
+					"type": [ "string", "null" ]
+				},
+				"zipCode": {
+					"type": [ "string", "null" ]
+				},
+				"city": {
+					"type": [ "string", "null" ]
+				},
+				"phone": {
+					"type": [ "string", "null" ]
+				},
+				"phoneMobile": {
+					"type": [ "string", "null" ]
+				},
+				"phoneWork": {
+					"type": [ "string", "null" ]
+				},
+				"email": {
+					"type": [ "string", "null" ]
+				},
+				"altEmail": {
+					"type": [ "string", "null" ]
+				},
+				"emergencyContact": {
+					"type": [ "string", "null" ]
+				},
+				"altContact": {
+					"type": [ "string", "null" ]
+				},
+				"health": {
+					"type": [ "string", "null" ]
+				},
+				"membership": {
+					"type": "integer"
+				},
+				"dressSize": {
+					"type": [ "string", "null" ]
+				},
+				"relationId": {
+					"type": [ "integer", "null" ]
+				},
+				"notes": {
+					"type": [ "string", "null" ]
+				}
+			},
+			"required": [
+				"lastName",
+				"firstName"
+			],
+			"additionalProperties": false
+		}
+	},
+	"required": [
+		"id",
+		"changedBy",
+		"changedAt",
+		"data_enc",
+		"data"
+	],
+	"additionalProperties": false
+}

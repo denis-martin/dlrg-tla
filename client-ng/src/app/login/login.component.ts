@@ -21,7 +21,11 @@ export class LoginComponent implements OnInit
 	ngOnInit() 
 	{
 		if (!this.ds.userName) {
-			this.ds.isLoggedIn().catch(() => {});
+			this.ds.isLoggedIn()
+				.then(() => {
+					this.router.navigate(['/']);
+				})
+				.catch(() => {});
 		}
 	}
 

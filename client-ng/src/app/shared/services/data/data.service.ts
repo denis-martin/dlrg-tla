@@ -17,21 +17,109 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { timer } from 'rxjs';
 
 import { AES, SHA256, enc } from 'crypto-js';
+import * as Ajv from 'ajv';
 
-import * as SchemaTest from './schemas/test.json';
+import * as SchemaParticipant from './schemas/participant.json';
+
 import { Test } from './schemas/test';
+import { IParticipant } from './schemas/participant';
 
 const apiBasePath = "http://localhost:3100/";
 const ciphertest = "1234567890";
+
+// handles /api/db/{table} calls
+class TableConnector
+{
+	private isSyncing = false;
+	private autoSync = false;
+	private validate: any;
+	private timerSub: any;
+
+	constructor(private table: string, private schema: any, private refreshRate: number, private ds: DataService) 
+	{
+		var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+		this.validate = ajv.compile(schema);
+	}
+
+	sync(autoSync = false): void 
+	{
+		let self = this;
+		if (this.autoSync && autoSync) {
+			// no action required since autoSync is active
+			console.info("Skipping sync since autoSync is active");
+			return;
+		}
+		if (this.isSyncing) {
+			console.warn("Syncing already in progress");
+			return;
+		}
+		this.isSyncing = true;
+		this.ds.http.get(apiBasePath + "api/db/" + this.table, this.ds.httpOptions)
+			.toPromise()
+			.then((response: HttpResponse<Object>) => {
+				console.log("HTTP GET " + apiBasePath + "api/db/" + this.table + " was successful", response);
+				var items: any = response;
+				items.forEach(item => {
+					if (item['id'] in this.ds[this.table]) {
+						let remoteChangedAt = new Date(item['changedAt']);
+						let localChangedAt = new Date(this.ds[this.table][item['id']].changedAt);
+						if (remoteChangedAt > localChangedAt) {
+							console.info("Updating", item);
+							this.ds[this.table][item['id']] = this.unpack(item);
+						}
+					} else {
+						this.ds[this.table][item['id']] = this.unpack(item);
+					}
+				});
+				console.log(this.ds[this.table]);
+				if (autoSync && !self.autoSync) {
+					self.autoSync = true;
+					self.timerSub = timer(self.refreshRate, self.refreshRate)
+						.subscribe(t => { self.sync(); });
+				}
+				this.isSyncing = false;
+			})
+			.catch((response) => {
+				self.handleError(response);
+				this.isSyncing = false;
+			});
+	}
+
+	private handleError(response): void
+	{
+		console.error("HTTP request failed", response);
+		if (response.status == 401) {
+			this.ds.isLoggedIn().catch(err => {}); // check login state
+		}
+	}
+
+	unpack(item: any): any
+	{
+		let parsedItem = item;
+		parsedItem['data'] = JSON.parse(this.ds.decrypt(item['data_enc']));
+		var valid = this.validate(parsedItem);
+		if (!valid) {
+			console.warn("Validation error", parsedItem, this.validate.errors);
+		}
+		return parsedItem;
+	}
+}
 
 @Injectable({
 	providedIn: 'root'
 })
 export class DataService 
 {
-	private httpReqHeaders: HttpHeaders;
+	public httpOptions = {
+		headers: new HttpHeaders({
+				"Content-Type": "application/json; charset=utf-8"
+			}),
+		withCredentials: true
+	}
+	
 	private cipherChallenge: string;
 
 	public userName: string = null;
@@ -40,43 +128,43 @@ export class DataService
 	public dataKeyHash: string;
 
 	readonly schemas = {
-		test: SchemaTest.default
+		participant: SchemaParticipant.default
 	}
 
-	test: Test = {
-		lastName: "Bob"
+	tableConnectors = {
+		participants: new TableConnector('participants', this.schemas.participant, 5000, this)
 	}
 
-	constructor(private http: HttpClient)
+	participants: { [k: number]: IParticipant } = {}
+
+	constructor(public http: HttpClient)
 	{
-		this.httpReqHeaders = new HttpHeaders({
-			"Content-Type": "application/json; charset=utf-8"
-		});
 		if (!this.dataKeyHash) {
 			this.dataKeyHash = localStorage.getItem("dkh");
 			if (this.dataKeyHash) {
 				this.needDataKey = false;
 			}
 		}
-		console.info("DataService is alive", this.test.lastName);
+		console.info("DataService is alive");
 	}
 
 	isLoggedIn()
 	{
 		return new Promise((resolve, reject) => 
 		{
-            this.http.get(apiBasePath + "api/login")
+            this.http.get(apiBasePath + "api/login", this.httpOptions)
                 .toPromise()
                 .then((response: HttpResponse<Object>) => 
                 {
-                    console.info("isLoggedIn(): success");
+                    console.info("isLoggedIn(): success", response);
                     this.needLogin = false;
-                    var body: any = response.body;
+                    var body: any = response;
                     this.userName = body.user;
                     this.cipherChallenge = body.ciphertest;
                     
                     if (this.checkCipher(this.cipherChallenge)) {
-                        resolve();
+						resolve();
+						this.restartSync();
                     } else {
                         reject();
                     }
@@ -111,7 +199,7 @@ export class DataService
 			if (this.needLogin || !this.cipherChallenge) {
 				this.http.post(apiBasePath + "api/login", 
 					JSON.stringify({ user: this.userName, passphrase: passPhrase }), 
-					{ headers: this.httpReqHeaders }
+					this.httpOptions
 				).toPromise()
 					.then((response: any) => 
 					{
@@ -121,6 +209,7 @@ export class DataService
 
 						if (this.checkCipher(this.cipherChallenge)) {
 							resolve();
+							this.restartSync();
 						} else {
 							reject({ 'status': 1403 });
 						}
@@ -146,6 +235,13 @@ export class DataService
 				}
 			}
 		});
+	}
+
+	restartSync()
+	{
+		for (let t in this.tableConnectors) {
+			this.tableConnectors[t].sync(false); // should be switched to true
+		}
 	}
 
 	setDataKey(dataKey: string)
