@@ -1,0 +1,33 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/coursetypechecklist.json",
+	"title": "ICourseTypeCheckList",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": [ "string",  "null" ]
+		},
+		"changedAt": {
+			"type": [ "string",  "null" ],
+			"format": "date-time"
+		},
+		"ctId": {
+			"type": "integer"
+		},
+		"item": {
+			"type": "string"
+		},
+		"order": {
+			"type": "integer"
+		}
+	},
+	"required": [
+		"id",
+		"ctId",
+		"item",
+		"order"
+	],
+	"additionalProperties": false
+}

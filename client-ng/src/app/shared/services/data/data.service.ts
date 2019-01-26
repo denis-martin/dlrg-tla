@@ -1,18 +1,18 @@
 /*	
- * Copyright 2019 Denis Martin.  This file is part of swadit.
+ * Copyright 2019 Denis Martin.  This file is part of dlrg-tla.
  * 
- * swadit is free software: you can redistribute it and/or modify
+ * dlrg-tla is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * swadit is distributed in the hope that it will be useful,
+ * dlrg-tla is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with swadit.  If not, see <http://www.gnu.org/licenses/>.
+ * along with dlrg-tla.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import { Injectable } from '@angular/core';
@@ -24,9 +24,23 @@ import * as Ajv from 'ajv';
 
 import * as SchemaParticipant from './schemas/participant.json';
 import * as SchemaRegistration from './schemas/registration.json';
+import * as SchemaQualification from './schemas/qualification.json';
+import * as SchemaCourseType from './schemas/coursetype.json';
+import * as SchemaCourseTypeCheckList from './schemas/coursetypechecklist.json';
+import * as SchemaQualificationType from './schemas/qualificationtype.json';
+import * as SchemaSeason from './schemas/season.json';
+import * as SchemaCourse from './schemas/course.json';
+import * as SchemaCourseParticipant from './schemas/courseparticipant.json';
 
 import { IParticipant } from './schemas/participant';
 import { IRegistration } from './schemas/registration';
+import { IQualification } from './schemas/qualification';
+import { ICourseType } from './schemas/coursetype';
+import { ICourseTypeCheckList } from './schemas/coursetypechecklist';
+import { IQualificationType } from './schemas/qualificationtype';
+import { ISeason } from './schemas/season';
+import { ICourse } from './schemas/course';
+import { ICourseParticipant } from './schemas/courseparticipant';
 
 const apiBasePath = "http://localhost:3100/";
 const ciphertest = "1234567890";
@@ -41,7 +55,7 @@ class TableConnector
 
 	constructor(private table: string, private schema: any, private refreshRate: number, private ds: DataService) 
 	{
-		var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+		var ajv = new Ajv({ allErrors: true });
 		this.validate = ajv.compile(schema);
 	}
 
@@ -69,10 +83,10 @@ class TableConnector
 						let localChangedAt = new Date(this.ds[this.table][item['id']].changedAt);
 						if (remoteChangedAt > localChangedAt) {
 							console.info("Updating", item);
-							this.ds[this.table][item['id']] = this.unpack(item);
+							this.ds[this.table][item['id']] = this.unwrap(item);
 						}
 					} else {
-						this.ds[this.table][item['id']] = this.unpack(item);
+						this.ds[this.table][item['id']] = this.unwrap(item);
 					}
 				});
 				console.log(this.ds[this.table]);
@@ -102,10 +116,12 @@ class TableConnector
 		}
 	}
 
-	unpack(item: any): any
+	unwrap(item: any): any
 	{
 		let parsedItem = item;
-		parsedItem['data'] = JSON.parse(this.ds.decrypt(item['data_enc']));
+		if (item['data_enc']) {
+			parsedItem['data'] = JSON.parse(this.ds.decrypt(item['data_enc']));
+		}
 		var valid = this.validate(parsedItem);
 		if (!valid) {
 			console.warn("Validation error", parsedItem, this.validate.errors);
@@ -135,15 +151,36 @@ export class DataService
 
 	readonly schemas = {
 		participant: SchemaParticipant.default,
-		registration: SchemaRegistration.default
+		registration: SchemaRegistration.default,
+		qualification: SchemaQualification.default,
+		coursetype: SchemaCourseType.default,
+		coursetypechecklist: SchemaCourseTypeCheckList.default,
+		qualificationtype: SchemaQualificationType.default,
+		season: SchemaSeason.default,
+		course: SchemaCourse.default,
+		courseparticipant: SchemaCourseParticipant.default
 	}
 
 	participants: { [k: number]: IParticipant } = {}
 	registrations: { [k: number]: IRegistration } = {}
+	qualifications: { [k: number]: IQualification } = {}
+	coursetypes: { [k: number]: ICourseType } = {}
+	coursetypechecklists: { [k: number]: ICourseTypeCheckList } = {}
+	qualificationtypes: { [k: number]: IQualificationType } = {}
+	seasons: { [k: number]: ISeason } = {}
+	courses: { [k: number]: ICourse } = {}
+	courseparticipants: { [k: number]: ICourseParticipant } = {}
 
 	tableConnectors = {
 		participants: new TableConnector('participants', this.schemas.participant, 5000, this),
-		registrations: new TableConnector('registrations', this.schemas.registration, 5000, this)
+		registrations: new TableConnector('registrations', this.schemas.registration, 5000, this),
+		qualifications: new TableConnector('qualifications', this.schemas.qualification, 5000, this),
+		coursetypes: new TableConnector('coursetypes', this.schemas.coursetype, 120000, this),
+		coursetypechecklists: new TableConnector('coursetypechecklists', this.schemas.coursetypechecklist, 120000, this),
+		qualificationtypes: new TableConnector('qualificationtypes', this.schemas.qualificationtype, 120000, this),
+		seasons: new TableConnector('seasons', this.schemas.season, 120000, this),
+		courses: new TableConnector('courses', this.schemas.course, 5000, this),
+		courseparticipants: new TableConnector('courseparticipants', this.schemas.courseparticipant, 5000, this)
 	}
 
 	/*

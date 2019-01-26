@@ -1,0 +1,73 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/qualification.json",
+	"title": "IQualification",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_enc": {
+			"type": "string"
+		},
+		"data": {
+			"type": "object",
+			"properties": {
+				"date": {
+					"type": [ "string", "null" ],
+					"format": "date"
+				},
+				"notes": {
+					"type": [ "string", "null" ]
+				},
+				"status": {
+					"type": [ "integer", "null" ]
+				},
+				"expiryDate": {
+					"type": [ "string", "null" ],
+					"format": "date"
+				},
+				"renewalDate": {
+					"type": [ "string", "null" ],
+					"format": "date"
+				},
+				"renewalCount": {
+					"type": [ "integer", "null" ]
+				},
+				"renewalRegno": {
+					"type": [ "string", "null" ]
+				},
+				"examiner": {
+					"type": [ "string", "null" ]
+				},
+				"regno": {
+					"type": [ "string", "null" ]
+				}
+			},
+			"required": [ ],
+			"additionalProperties": false
+		},
+		"pId": {
+			"type": "integer"
+		},
+		"qtId": {
+			"type": "integer"
+		}
+	},
+	"required": [
+		"id",
+		"changedBy",
+		"changedAt",
+		"data_enc",
+		"data",
+		"pId",
+		"qtId"
+	],
+	"additionalProperties": false
+}

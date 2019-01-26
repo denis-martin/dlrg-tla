@@ -1,0 +1,79 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/season.json",
+	"title": "ISeason",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_enc": {
+			"type": "string"
+		},
+		"data": {
+			"type": "object",
+			"properties": {
+				"dates": {
+					"type": "object",
+					"patternProperties": {
+						"^[0-9]{4}-[0-9]{2}-[0-9]{2}$": {
+							"type": "object",
+							"properties": {
+								"desc": {
+									"type": "string"
+								},
+								"training": {
+									"type": "boolean",
+									"default": true
+								}
+							},
+							"required": [
+								"desc",
+								"training"
+							],
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"required": [
+				"dates"
+			],
+			"additionalProperties": false
+		},
+		"begin": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"begin2": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"end": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"required": [
+		"id",
+		"changedBy",
+		"changedAt",
+		"data_enc",
+		"data",
+		"begin",
+		"begin2",
+		"end",
+		"name"
+	],
+	"additionalProperties": false
+}

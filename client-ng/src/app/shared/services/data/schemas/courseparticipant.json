@@ -1,0 +1,65 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/courseparticipant.json",
+	"title": "ICourseParticipant",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_enc": {
+			"type": "string"
+		},
+		"data": {
+			"type": "object",
+			"properties": {
+				"chargePayedAt": {
+					"type": "string",
+					"format": "date"
+				}
+			}
+		},
+		"sId": {
+			"type": "integer"
+		},
+		"cId": {
+			"type": "integer"
+		},
+		"pId": {
+			"type": "integer"
+		},
+		"instructor": {
+			"type": "integer"
+		},
+		"charge": {
+			"type": [ "number", "null" ]
+		},
+		"chargePayedAt": {
+			"type": "null"
+		},
+		"familyDiscount": {
+			"type": "integer"
+		},
+		"passSent": {
+			"type": "integer"
+		},
+		"status": {
+			"type": "integer"
+		}
+	},
+	"required": [
+		"id",
+		"changedBy",
+		"changedAt",
+		"cId",
+		"pId",
+		"sId"
+	],
+	"additionalProperties": false
+}

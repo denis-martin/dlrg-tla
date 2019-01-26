@@ -1,0 +1,28 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/coursetype.json",
+	"title": "ICourseType",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"name": {
+			"type": "string"
+		},
+		"prereq": {
+			"type": [ "string",  "null" ]
+		}
+	},
+	"required": [
+		"id",
+		"name"
+	],
+	"additionalProperties": false
+}

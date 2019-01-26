@@ -1,0 +1,29 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/qualificationtype.json",
+	"title": "IQualificationType",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"name": {
+			"type": "string"
+		},
+		"order": {
+			"type": "integer"
+		}
+	},
+	"required": [
+		"id",
+		"name",
+		"order"
+	],
+	"additionalProperties": false
+}

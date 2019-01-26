@@ -1,0 +1,60 @@
+{
+	"$id": "https://schemas.dlrg-ettlingen.de/tla/course.json",
+	"title": "ICourse",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "integer"
+		},
+		"changedBy": {
+			"type": "string"
+		},
+		"changedAt": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"sId": {
+			"type": "integer"
+		},
+		"ctId": {
+			"type": "integer"
+		},
+		"name": {
+			"type": "string"
+		},
+		"lane": {
+			"type": [ "string", "null" ]
+		},
+		"capacity": {
+			"type": [ "integer", "null" ]
+		},
+		"begin": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"end": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"seasonPass": {
+			"type": "integer"
+		},
+		"charge": {
+			"type": [ "number", "null" ]
+		},
+		"chargeNonMember": {
+			"type": [ "number", "null" ]
+		}
+	},
+	"required": [
+		"id",
+		"changedBy",
+		"changedAt",
+		"sId",
+		"ctId",
+		"name",
+		"begin",
+		"end"
+	],
+	"additionalProperties": false
+}
