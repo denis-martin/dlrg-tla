@@ -1,15 +1,23 @@
 
 var winston = require('winston');
 
+var config = require('./config.js');
+
+var debugTransports = [];
+if (config.logger.commandLine) {
+  debugTransports.push(new (winston.transports.Console)({ json: false, timestamp: true }));
+}
+debugTransports.push(new winston.transports.File({ filename: __dirname + '/debug.log', json: false }));
+
+var exceptionTransports = [];
+if (config.logger.commandLine) {
+  exceptionTransports.push(new (winston.transports.Console)({ json: false, timestamp: true }));
+}
+exceptionTransports.push(new winston.transports.File({ filename: __dirname + '/debug.log', json: false }));
+
 var logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({ json: false, timestamp: true }),
-    new winston.transports.File({ filename: __dirname + '/debug.log', json: false })
-  ],
-  exceptionHandlers: [
-    new (winston.transports.Console)({ json: false, timestamp: true }),
-    new winston.transports.File({ filename: __dirname + '/exceptions.log', json: false })
-  ],
+  transports: debugTransports,
+  exceptionHandlers: exceptionTransports,
   exitOnError: false
 });
 

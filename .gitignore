@@ -64,7 +64,9 @@ client/bower_components/
 client-gen2/node_modules/
 server/node_modules/
 
-server/debug.log
+server/src/config.js
+server/src/debug.log
+server/src/exceptions.log
 
 client/img/dlrg-logo.svg
 client/img/signature.png

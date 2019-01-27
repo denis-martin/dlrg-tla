@@ -1,6 +1,9 @@
 
 module.exports = {
 	engineeringMode: false, // if true, allow CORS on localhost:4200 (angular/webpack)
+	logger: {
+		commandLine: true,
+	},
 	connection: {
 		host     : 'localhost',
 		user     : 'dlrg_admin',
