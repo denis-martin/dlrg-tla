@@ -193,8 +193,7 @@ app.post('/api/db/:tablename', requireLogin, checkTableAcl, requireDbc, function
 
     } else {
         var now = new Date();
-        now.setMilliseconds(0);
-        req.body.changedAt = now.toISOString();
+        req.body.changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
         req.body.changedBy = req.user;
         dbc.query("INSERT INTO dlrg_tla_" + req.params.tablename + " SET ?;", req.body,
             function(err, info) {
@@ -246,8 +245,7 @@ app.put('/api/db/:tablename/:id', requireLogin, checkTableAcl, requireDbc, funct
 
     } else {
         var now = new Date();
-        now.setMilliseconds(0);
-        req.body.changedAt = now.toISOString();
+        req.body.changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
         req.body.changedBy = req.user;
         dbc.query("UPDATE dlrg_tla_" + req.params.tablename + " SET ? WHERE id=" + req.params.id + ";", req.body,
             function(err, info) {
@@ -282,9 +280,8 @@ app.post('/api/db/:tablename/:id', requireLogin, checkTableAcl, requireDbc, func
 
     } else {
         var now = new Date();
-        now.setMilliseconds(0);
         req.body.id = req.params.id;
-        req.body.changedAt = now.toISOString();
+        req.body.changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
         req.body.changedBy = req.user;
         dbc.query("INSERT INTO dlrg_tla_" + req.params.tablename + " SET ?;", req.body,
             function(err, info) {
@@ -340,8 +337,7 @@ app.post('/api/presence', requireLogin, requireDbc, function(req, res)
 
     } else {
         var now = new Date();
-        now.setMilliseconds(0);
-        var changedAt = now.toISOString();
+        var changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
         var changedBy = req.user;
         var r = req.body;
 
@@ -381,8 +377,7 @@ app.post('/api/presence/upload', requireLogin, requireDbc, function(req, res)
 
     } else {
         var now = new Date();
-        now.setMilliseconds(0);
-        var changedAt = now.toISOString();
+        var changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
         var changedBy = req.user;
         var successCount = 0;
         var errorCount = 0;
