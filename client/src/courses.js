@@ -229,6 +229,9 @@ DlrgTlaApp.controller('DlgCourseEditCtrl', function ($scope, $uibModalInstance, 
 		angular.forEach($scope.obj, function(v, k) {
 			if (!k.startsWith("_") && k != "data") {
 				body[k] = v;
+				if ((k == 'begin' && body[k]) || (k == 'end' && body[k])) {
+					body[k].toISOString().split("T")[0];
+				}
 			}
 		});
 		if ($scope.obj.id) {
