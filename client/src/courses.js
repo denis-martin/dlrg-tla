@@ -190,8 +190,8 @@ DlrgTlaApp.controller('DlgCourseEditCtrl', function ($scope, $uibModalInstance, 
 		var sobj = DlrgTla.sId ? DlrgTla.getEntry("seasons", DlrgTla.sId) : null;
 		$scope.obj = { 
 			sId: DlrgTla.sId, ctId: -1, name: null, 
-			begin: (sobj && sobj.begin) ? sobj.begin.toISOString().split("T")[0] : (new Date()).toISOString().split("T")[0], 
-			end: (sobj && sobj.end) ? sobj.end.toISOString().split("T")[0] : (new Date()).toISOString().split("T")[0],
+			begin: (sobj && sobj.begin) ? sobj.begin : (new Date()).toISOString().split("T")[0], 
+			end: (sobj && sobj.end) ? sobj.end : (new Date()).toISOString().split("T")[0],
 			seasonPass: 0,
 		};
 		DlrgTla.resetData($scope.obj, "courses");
@@ -230,7 +230,8 @@ DlrgTlaApp.controller('DlgCourseEditCtrl', function ($scope, $uibModalInstance, 
 			if (!k.startsWith("_") && k != "data") {
 				body[k] = v;
 				if ((k == 'begin' && body[k]) || (k == 'end' && body[k])) {
-					body[k].toISOString().split("T")[0];
+					// TODO: Wrong place to fix this
+					body[k] = body[k].split("T")[0];
 				}
 			}
 		});
