@@ -32,6 +32,16 @@ DlrgTlaApp.controller('DlgSeasonEditCtrl', function ($scope, $uibModalInstance, 
 		$scope.commitFailed = false;
 		DlrgTla.setDataEnc($scope.obj);
 
+		if ($scope.obj.begin) {
+			$scope.obj.begin = new Date($scope.obj.begin).toISOString().split("T")[0];
+		}
+		if ($scope.obj.begin2) {
+			$scope.obj.begin2 = new Date($scope.obj.begin2).toISOString().split("T")[0];
+		}
+		if ($scope.obj.end) {
+			$scope.obj.end = new Date($scope.obj.end).toISOString().split("T")[0];
+		}
+	
 		var body = {};
 		angular.forEach($scope.obj, function(v, k) {
 			if (!k.startsWith("_") && k != "data") {
@@ -168,6 +178,16 @@ DlrgTlaApp.controller('DlgSeasonDayEditCtrl', function ($scope, $uibModalInstanc
 		$scope.commitFailed = false;
 		DlrgTla.setDataEnc($scope.obj);
 
+		if ($scope.obj.begin) {
+			$scope.obj.begin = new Date($scope.obj.begin).toISOString().split("T")[0];
+		}
+		if ($scope.obj.begin2) {
+			$scope.obj.begin2 = new Date($scope.obj.begin2).toISOString().split("T")[0];
+		}
+		if ($scope.obj.end) {
+			$scope.obj.end = new Date($scope.obj.end).toISOString().split("T")[0];
+		}
+	
 		var body = {};
 		angular.forEach($scope.obj, function(v, k) {
 			if (!k.startsWith("_") && k != "data") {
