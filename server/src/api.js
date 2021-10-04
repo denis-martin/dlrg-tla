@@ -336,12 +336,15 @@ app.post('/api/presence', requireLogin, requireDbc, function(req, res)
         console.log(typeof req.body);
 
     } else {
-        var now = new Date();
-        var changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
-        var changedBy = req.user;
-        var r = req.body;
+        const now = new Date();
+        const changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
+        const changedBy = req.user;
+        const r = req.body;
+        if (r.date && r.date.includes('T')) {
+            r.date = r.date.split('T')[0];
+        }
 
-        var queryStr =
+        const queryStr =
             "INSERT INTO dlrg_tla_presence (date, pId, presence, changedAt, changedBy) VALUES (" + 
                 "\"" + r.date + "\", " + 
                 r.pId + ", " +
@@ -353,7 +356,7 @@ app.post('/api/presence', requireLogin, requireDbc, function(req, res)
                 "changedAt=\"" + changedAt + "\", " + 
                 "changedBy=\"" + changedBy + "\";\n";
         dbc.query(queryStr,
-            function(err, info) {
+            (err, info) => {
                 if (err) {
                     logger.info(errors.dbPost, err);
                     res.status(500).send({ code: 500, error: errors.dbPost });
@@ -376,16 +379,19 @@ app.post('/api/presence/upload', requireLogin, requireDbc, function(req, res)
         console.log(typeof req.body);
 
     } else {
-        var now = new Date();
-        var changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
-        var changedBy = req.user;
-        var successCount = 0;
-        var errorCount = 0;
+        const now = new Date();
+        const changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
+        const changedBy = req.user;
+        let successCount = 0;
+        let errorCount = 0;
 
         req.body.forEach(r => {
+            if (r.date && r.date.includes('T')) {
+                r.date = r.date.split('T')[0];
+            }
             console.log(JSON.stringify(r));
 
-            var queryStr =
+            const queryStr =
                 "INSERT INTO dlrg_tla_presence (date, pId, presence, changedAt, changedBy) VALUES (" + 
                     "\"" + r.date + "\", " + 
                     r.pId + ", " +
@@ -397,7 +403,7 @@ app.post('/api/presence/upload', requireLogin, requireDbc, function(req, res)
                     "changedAt=\"" + changedAt + "\", " + 
                     "changedBy=\"" + changedBy + "\";\n";
             dbc.query(queryStr,
-                function(err, info) {
+                (err, info) => {
                     if (err) {
                         logger.info(errors.dbPost, err);
 
