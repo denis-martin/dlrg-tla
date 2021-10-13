@@ -5,6 +5,7 @@
 	<meta name="viewport" content="initial-scale=1, width=device-width"/>
 	<title>DLRG Ettlingen e.V. - Übungsabend-/Kurskarte</title>
 	<script src="../bower_components/angular/angular.min.js"></script>
+	<script src="../bower_components/qrious/dist/qrious.min.js"></script>
 	<script src="../src/print.js?r=1"></script>
 	<link rel="stylesheet" href="../styles/Code39Azalea/Code39Azalea.css">
 	<link rel="stylesheet" href="../styles/print.css?r=1">
@@ -71,6 +72,7 @@
 			</div>
 			<div style="margin-bottom: 4mm">
 				<span class="barcode">*{{pad(cp.pId)}}*</span>
+				<canvas id="qrcode-{{cp.cId}}-{{cp.pId}}" class="qrcode">{{ generateQrCode(cp.cId, cp.pId) }}</canvas>
 			</div>
 			<div ng-if="cp.charge">
 				Die Gebühren in Höhe von {{cp.charge}} € wurden <span ng-if="cp.data.chargePayedAt">am {{cp.data.chargePayedAt | date:"dd.MM.yyyy"}}</span> bezahlt.

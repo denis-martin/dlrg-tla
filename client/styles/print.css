@@ -87,6 +87,12 @@ tbody tr.rowSeparator { border-bottom: 1px solid black; }
 	font-size: 64pt;
 }
 
+.qrcode {
+	width: 64pt;
+	height: 64pt;
+	margin-left: 10pt;
+}
+
 .dateHeader {
 	transform: rotate(-90deg);
 	overflow: visible;

@@ -60,6 +60,18 @@ var DlrgTlaPrintApp = angular.module('DlrgTlaPrintApp', [])
 		return ('0000' + num).substr(-size);
 	}
 
+	$scope.generateQrCode = function(cId, cpId)
+	{
+		let qr = new QRious({
+			element: document.getElementById('qrcode-' + cId + '-' + cpId),
+			value: String(cpId),
+			level: 'H',
+			padding: 0,
+			size: 85
+		});
+		return "";
+	}
+
 	if (window.parent.DlrgTla) {
 		DlrgTla = window.parent.DlrgTla;
 		$scope.DlrgTla = DlrgTla;
