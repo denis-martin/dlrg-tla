@@ -350,7 +350,7 @@ var DlrgTlaApp = angular.module('DlrgTlaApp', ['LocalStorageModule', 'ui.bootstr
 
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'ui/dlgCourseParticipantEdit.html',
+			templateUrl: 'ui/dlgCourseParticipantEdit.html?r=20211014',
 			controller: 'DlgCourseParticipantEditCtrl',
 			size: 'lg', // 'lg', 'sm'
 			resolve: {

@@ -334,7 +334,10 @@ DlrgTlaApp.controller('DlgCourseParticipantEditCtrl', function ($scope, $uibModa
 			familyDiscount: 0,
 			status: 0,
 			passSent: 0,
-			data: {},
+			data: {
+				healthDeclared: 0,
+				covid19Vac: 0, // 0: none, 1: vaccinated/recovered
+			}
 		};
 		DlrgTla.resetData($scope.obj, "courseparticipants");
 	}

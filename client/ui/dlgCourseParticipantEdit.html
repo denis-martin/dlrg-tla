@@ -71,6 +71,22 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="col-md-3" title="Gesundheitsbescheinigung abgegeben">
+			<label for="healthDeclared">Gesundheitsbescheinigung</label>
+			<select class="form-control" id="healthDeclared" ng-model="obj.data.healthDeclared">
+				<option value="0">Nein</option>
+				<option value="1">Ja</option>
+			</select>
+		</div>
+		<div class="col-md-2" title="COVID-19 2G-Nachweis (geimpft/genesen)">
+			<label for="covid19Vac" >COVID-19 2G</label>
+			<select class="form-control" id="covid19Vac" ng-model="obj.data.covid19Vac" convert-to-number>
+				<option value="0">Nein</option>
+				<option value="1">Ja</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-md-12">
 			<label for="notes">Notizen</label>
 			<textarea class="form-control" id="notes" ng-model="obj.data.notes"></textarea>
