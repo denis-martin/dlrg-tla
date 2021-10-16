@@ -31,6 +31,12 @@
 		ng-repeat="cp in DlrgTla.db.courseparticipants | filterCourseParticipants:passesOnlyPayed:passesOnlyNotSent:passesInstructors:passesCpId | orderBy: getParticipantName" 
 		ng-init="p = DlrgTla.getEntry('participants', cp.pId); c = DlrgTla.getEntry('courses', cp.cId)">
 
+		<div style="float: left; position: absolute; left: 0; right: 0">
+			<span style="font-size: 1px; color: #ffffff11">
+				#dlrgtlacontrol#{ "pId": {{cp.pId}}, "cpId": {{cp.id}}, "firstName": "{{p.data.firstName}}", "lastName": "{{p.data.lastName}}", "course": "{{c.name}}", "seasonPass": {{c.seasonPass ? 'true' : 'false'}}, "email": "{{p.data.email}}<span ng-if="p.data.altEmail">,{{p.data.altEmail}}</span>" }#
+			</span>
+		</div>
+
 		<div class="no-print control" style="float: left; position: absolute; left: 145mm; right: 0">
 			E-Mail:
 			<p>
@@ -42,12 +48,6 @@
 
 		<div style="float: right">
 			<span class="small">{{cp.pId}} / {{c.begin | date:"yyyy"}}</span><br>
-		</div>
-
-		<div style="float: left">
-			<span style="font-size: 1px; color: white">
-				#dlrgtlacontrol#{ "cpId": {{cp.id}}, "firstName": "{{p.data.firstName}}", "lastName": "{{p.data.lastName}}", "course": "{{c.name}}", "seasonPass": {{c.seasonPass ? 'true' : 'false'}}, "email": "{{p.data.email}}<span ng-if="p.data.altEmail">,{{p.data.altEmail}}</span>" }#
-			</span>
 		</div>
 
 		<div style="position: absolute">
@@ -74,9 +74,9 @@
 				<span class="barcode">*{{pad(cp.pId)}}*</span>
 				<canvas id="qrcode-{{cp.cId}}-{{cp.pId}}" class="qrcode">{{ generateQrCode(cp.cId, cp.pId) }}</canvas>
 			</div>
-			<div ng-if="cp.charge">
+			<!--<div ng-if="cp.charge">
 				Die Gebühren in Höhe von {{cp.charge}} € wurden <span ng-if="cp.data.chargePayedAt">am {{cp.data.chargePayedAt | date:"dd.MM.yyyy"}}</span> bezahlt.
-			</div>
+			</div>-->
 		</div>
 
 		<div style="margin-top: 4mm">
