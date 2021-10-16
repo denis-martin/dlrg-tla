@@ -48,11 +48,12 @@ var tableAcl = {
 
     courseparticipants: {
         write: [ "sId", "cId", "pId", "instructor", "charge", "chargePayedAt", "familyDiscount", "status", "passSent", "data_enc" ],
-        methods: ["GET", "POST", "PUT", "DELETE"]
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        query: [ "sId" ]
     },
 
     presence: {
-        write: [ "pId", "date", "presence" ],
+        write: [ "pId", "date", "presence", "data_enc" ],
         methods: ["GET", "POST", "PUT", "DELETE"]
     }
 }
@@ -147,7 +148,19 @@ app.post('/api/login', requireDbc, function(req, res)
 
 app.get('/api/db/:tablename', requireLogin, checkTableAcl, requireDbc, function(req, res)
 {
-    dbc.query('SELECT * FROM dlrg_tla_' + req.params.tablename + ';', function(err, rows, fields) {
+    let filter = "";
+    if (tableAcl[req.params.tablename].query) {
+        const query = [];
+        for (let p of tableAcl[req.params.tablename].query) {
+            if (p in req.query) {
+                query.push(p + " = " + mysql.escape(req.query[p]));
+            }
+        }
+        if (query.length > 0) {
+            filter = " WHERE " + query.join(', ');
+        }
+    }
+    dbc.query('SELECT * FROM dlrg_tla_' + req.params.tablename + filter + ';', function(err, rows, fields) {
         if (err) {
             logger.info(errors.dbGet, err);
             res.status(500).send({ code: 500, error: errors.dbGet });
@@ -343,16 +356,24 @@ app.post('/api/presence', requireLogin, requireDbc, function(req, res)
         if (r.date && r.date.includes('T')) {
             r.date = r.date.split('T')[0];
         }
+        let data_enc = "NULL";
+        let data_enc_update = "";
+        if (r.data_enc) {
+            data_enc = mysql.escape(r.data_enc);
+            data_enc_update = "data_enc=" + data_enc + ", ";
+        }
 
         const queryStr =
-            "INSERT INTO dlrg_tla_presence (date, pId, presence, changedAt, changedBy) VALUES (" + 
+            "INSERT INTO dlrg_tla_presence (date, pId, presence, data_enc, changedAt, changedBy) VALUES (" + 
                 "\"" + r.date + "\", " + 
                 r.pId + ", " +
                 r.presence + ", " +
+                data_enc + ", " +
                 "\"" + changedAt + "\", " +
                 "\"" + changedBy + "\") " + 
             "ON DUPLICATE KEY UPDATE " + 
                 "presence=" + r.presence + ", " + 
+                data_enc_update + 
                 "changedAt=\"" + changedAt + "\", " + 
                 "changedBy=\"" + changedBy + "\";\n";
         dbc.query(queryStr,
