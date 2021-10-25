@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.5.57, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.19  Distrib 10.3.31-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: denis_dlrg_tla
 -- ------------------------------------------------------
--- Server version	5.5.57-0+deb7u1
+-- Server version	10.3.31-MariaDB-0+deb10u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -27,13 +27,13 @@ CREATE TABLE `dlrg_tla_courseparticipants` (
   `sId` int(11) NOT NULL,
   `cId` int(11) NOT NULL,
   `pId` int(11) NOT NULL,
-  `instructor` tinyint(1) NOT NULL DEFAULT '0',
+  `instructor` tinyint(1) NOT NULL DEFAULT 0,
   `charge` decimal(8,2) DEFAULT NULL,
   `chargePayedAt` date DEFAULT NULL,
-  `familyDiscount` tinyint(1) NOT NULL DEFAULT '0',
-  `status` int(11) NOT NULL DEFAULT '0',
-  `passSent` tinyint(1) NOT NULL DEFAULT '0',
-  `data_enc` text,
+  `familyDiscount` tinyint(1) NOT NULL DEFAULT 0,
+  `status` int(11) NOT NULL DEFAULT 0,
+  `passSent` tinyint(1) NOT NULL DEFAULT 0,
+  `data_enc` text DEFAULT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -43,7 +43,7 @@ CREATE TABLE `dlrg_tla_courseparticipants` (
   CONSTRAINT `fk_courseparticipants_cId` FOREIGN KEY (`cId`) REFERENCES `dlrg_tla_courses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_courseparticipants_pId` FOREIGN KEY (`pId`) REFERENCES `dlrg_tla_participants` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
   CONSTRAINT `fk_courseparticipants_sId` FOREIGN KEY (`sId`) REFERENCES `dlrg_tla_seasons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1708 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,14 +63,14 @@ CREATE TABLE `dlrg_tla_courses` (
   `capacity` int(11) DEFAULT NULL,
   `charge` decimal(8,2) DEFAULT NULL,
   `chargeNonMember` decimal(8,2) DEFAULT NULL,
-  `seasonPass` tinyint(1) NOT NULL DEFAULT '0',
+  `seasonPass` tinyint(1) NOT NULL DEFAULT 0,
   `lane` varchar(20) DEFAULT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_courses_sId_idx` (`sId`),
   CONSTRAINT `fk_courses_sId` FOREIGN KEY (`sId`) REFERENCES `dlrg_tla_seasons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,12 +83,12 @@ DROP TABLE IF EXISTS `dlrg_tla_coursetypechecklists`;
 CREATE TABLE `dlrg_tla_coursetypechecklists` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ctId` int(11) NOT NULL,
-  `item` text,
+  `item` text DEFAULT NULL,
   `order` int(11) NOT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,11 +115,11 @@ DROP TABLE IF EXISTS `dlrg_tla_participants`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dlrg_tla_participants` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `data_enc` text CHARACTER SET latin1,
+  `data_enc` text CHARACTER SET latin1 DEFAULT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1800 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2126 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,13 +134,14 @@ CREATE TABLE `dlrg_tla_presence` (
   `date` date NOT NULL,
   `pId` int(11) NOT NULL,
   `presence` int(11) NOT NULL,
+  `data_enc` text DEFAULT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Presence` (`date`,`pId`),
   KEY `fk_presence_pId_idx` (`pId`),
   CONSTRAINT `fk_presence_pId` FOREIGN KEY (`pId`) REFERENCES `dlrg_tla_participants` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5064 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,13 +155,13 @@ CREATE TABLE `dlrg_tla_qualifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pId` int(11) NOT NULL,
   `qtId` int(11) NOT NULL,
-  `data_enc` text,
+  `data_enc` text DEFAULT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_qualifications_pId_idx` (`pId`),
   CONSTRAINT `fk_qualifications_pId` FOREIGN KEY (`pId`) REFERENCES `dlrg_tla_participants` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1332 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1573 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +174,7 @@ DROP TABLE IF EXISTS `dlrg_tla_qualificationtypes`;
 CREATE TABLE `dlrg_tla_qualificationtypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
-  `order` int(11) DEFAULT '0',
+  `order` int(11) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -189,13 +190,13 @@ CREATE TABLE `dlrg_tla_registrations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pId` int(11) NOT NULL,
   `ctId` int(11) NOT NULL,
-  `data_enc` text,
+  `data_enc` text DEFAULT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `pId_idx` (`pId`),
   CONSTRAINT `fk_registrations_pId` FOREIGN KEY (`pId`) REFERENCES `dlrg_tla_participants` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=257 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=546 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,11 +212,11 @@ CREATE TABLE `dlrg_tla_seasons` (
   `begin` date NOT NULL,
   `begin2` date DEFAULT NULL,
   `end` date NOT NULL,
-  `data_enc` text,
+  `data_enc` text DEFAULT NULL,
   `changedAt` datetime DEFAULT NULL,
   `changedBy` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -230,7 +231,7 @@ CREATE TABLE `dlrg_tla_users` (
   `name` varchar(45) CHARACTER SET latin1 NOT NULL,
   `passhash` varchar(1024) DEFAULT NULL,
   `email` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -244,4 +245,4 @@ CREATE TABLE `dlrg_tla_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-04 21:06:51
+-- Dump completed on 2021-10-25 16:08:11
