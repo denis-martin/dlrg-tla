@@ -17,6 +17,10 @@ module.exports = {
 		secret : 'ne8~g|kGBm2~JGjgV9%S',
 		secure : true
 	},
+	test: {
+		user: '',
+		passphrase: ''
+	},
 	calendars: {
 		dlrgettlingen: {
 			method: "GET",
