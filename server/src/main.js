@@ -102,7 +102,7 @@ function requireLogin (req, res, next)
 	} else {
 		next();
 	}
-};
+}
 
 app.get('/api/logout', function(req, res) 
 {
@@ -124,5 +124,4 @@ require("./api")(app, requireLogin, extractUser);
 
 app.use(express.static('../client'));
 
-app.listen(3100, 'localhost');
-
+app.listen(config.port, config.hostname);
