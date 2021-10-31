@@ -124,4 +124,5 @@ require("./api")(app, requireLogin, extractUser);
 
 app.use(express.static('../client'));
 
+logger.info("Listening on", config.hostname, config.port);
 app.listen(config.port, config.hostname);
