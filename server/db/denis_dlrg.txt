@@ -3,9 +3,11 @@
 CREATE USER 'denis_dlrg_admin'@'localhost' IDENTIFIED BY PASSWORD PASSWORD("xyz");
 # mariadb:
 CREATE USER 'denis_dlrg_admin'@'localhost' IDENTIFIED BY "xyz";
+CREATE USER 'denis_dlrg_admin'@'172.%.%.%' IDENTIFIED BY "xyz";
 
 GRANT ALL PRIVILEGES ON `denis_dlrg_tla_test`.* TO 'denis_dlrg_admin'@'localhost'
-GRANT ALL PRIVILEGES ON `denis_dlrg_tla`.* TO 'denis_dlrg_admin'@'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON `denis_dlrg_tla`.* TO 'denis_dlrg_admin'@'localhost'
+GRANT SELECT, INSERT, UPDATE, DELETE ON `denis_dlrg_tla`.* TO 'denis_dlrg_admin'@'172.%.%.%'
 
 # dump schema and data
 mysqldump -d denis_dlrg_tla_test >denis_dlrg_tla_test-schema.sql
