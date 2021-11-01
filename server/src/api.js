@@ -1,11 +1,11 @@
-var mysql = require('mysql');
-var http = require('https');
-var logger = require('./logger');
+const mysql = require('mysql');
+const http = require('https');
+const logger = require('./logger');
 
-var errors = require('./errors.js');
-var config = require('./config.js');
+const errors = require('./errors.js');
+const config = require('./config.js');
 
-var tableAcl = {
+const tableAcl = {
 	participants: {
 		write: [ "data_enc" ],
 		methods: ["GET", "POST", "PUT", "DELETE"]
@@ -58,7 +58,7 @@ var tableAcl = {
 	}
 }
 
-var dbc = null; // database connection
+let dbc = null; // database connection
 
 function requireDbc(req, res, next) 
 {
@@ -93,7 +93,7 @@ function checkTableAcl(req, res, next)
 			res.status(405).send({ code: 405, error: errors.dbTableAclMethod });
 
 		} else if (req.method == "POST" || req.method == "PUT") {
-			var fieldErrors = false;
+			let fieldErrors = false;
 			// ignore some fields
 			delete req.body.id;
 			delete req.body.changedAt;
@@ -119,9 +119,9 @@ module.exports = function(app, requireLogin, extractUser)
 app.post('/api/login', requireDbc, function(req, res) 
 {
 	//logger.info(req);
-	var clientCert = req.get("X-Client-Cert-S");
+	const clientCert = req.get("X-Client-Cert-S");
 	logger.info("post login cert:", clientCert);
-	var user = extractUser(clientCert);
+	const user = extractUser(clientCert);
 	logger.info("post login name:", user);
 
 	// eslint-disable-next-line no-unused-vars
@@ -208,7 +208,7 @@ app.post('/api/db/:tablename', requireLogin, checkTableAcl, requireDbc, function
 		res.status(400).send({ code: 400, error: errors.dbPostReq });
 
 	} else {
-		var now = new Date();
+		const now = new Date();
 		req.body.changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
 		req.body.changedBy = req.user;
 		dbc.query("INSERT INTO dlrg_tla_" + req.params.tablename + " SET ?;", req.body,
@@ -260,7 +260,7 @@ app.put('/api/db/:tablename/:id', requireLogin, checkTableAcl, requireDbc, funct
 		res.status(400).send({ code: 400, error: errors.dbPutReq });
 
 	} else {
-		var now = new Date();
+		const now = new Date();
 		req.body.changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
 		req.body.changedBy = req.user;
 		dbc.query("UPDATE dlrg_tla_" + req.params.tablename + " SET ? WHERE id=" + req.params.id + ";", req.body,
@@ -295,7 +295,7 @@ app.post('/api/db/:tablename/:id', requireLogin, checkTableAcl, requireDbc, func
 		res.status(400).send({ code: 400, error: errors.dbPostReq });
 
 	} else {
-		var now = new Date();
+		const now = new Date();
 		req.body.id = req.params.id;
 		req.body.changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
 		req.body.changedBy = req.user;
@@ -319,15 +319,15 @@ app.post('/api/db/:tablename/:id', requireLogin, checkTableAcl, requireDbc, func
 
 app.get('/api/calendars/:cal', requireLogin, function(req, res)
 {
-	var mycalendars = config.calendars;
+	const mycalendars = config.calendars;
 	
 	if (!mycalendars[req.params.cal]) {
 		res.status(404).send({ code: 404, error: errors.notFound });
 		return;
 	}
-	var request = http.request(mycalendars[req.params.cal],
+	const request = http.request(mycalendars[req.params.cal],
 		function(response) {
-			var data = "";
+			let data = "";
 			res.status(response.statusCode);
 			res.contentType(response.headers['content-type']);
 			response.on('data', function(chunk) {
@@ -397,71 +397,72 @@ app.post('/api/presence', requireLogin, requireDbc, function(req, res)
 	}
 });
 
-app.post('/api/presence/upload', requireLogin, requireDbc, function(req, res)
-{
-	if (!(req.body && typeof req.body == "object")) {
-		res.status(400).send({ code: 400, error: errors.dbPostReq });
-		console.log(typeof req.body);
+// // deprecated
+// app.post('/api/presence/upload', requireLogin, requireDbc, function(req, res)
+// {
+// 	if (!(req.body && typeof req.body == "object")) {
+// 		res.status(400).send({ code: 400, error: errors.dbPostReq });
+// 		console.log(typeof req.body);
 
-	} else {
-		const now = new Date();
-		const changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
-		const changedBy = req.user;
-		let successCount = 0;
-		let errorCount = 0;
+// 	} else {
+// 		const now = new Date();
+// 		const changedAt = now.toISOString().slice(0, 19).replace('T', ' ');
+// 		const changedBy = req.user;
+// 		let successCount = 0;
+// 		let errorCount = 0;
 
-		req.body.forEach(r => {
-			if (r.date && r.date.includes('T')) {
-				r.date = r.date.split('T')[0];
-			}
-			console.log(JSON.stringify(r));
+// 		req.body.forEach(r => {
+// 			if (r.date && r.date.includes('T')) {
+// 				r.date = r.date.split('T')[0];
+// 			}
+// 			console.log(JSON.stringify(r));
 
-			const queryStr =
-				"INSERT INTO dlrg_tla_presence (date, pId, presence, changedAt, changedBy) VALUES (" + 
-					"\"" + r.date + "\", " + 
-					r.pId + ", " +
-					r.presence + ", " +
-					"\"" + changedAt + "\", " +
-					"\"" + changedBy + "\") " + 
-				"ON DUPLICATE KEY UPDATE " + 
-					"presence=" + r.presence + ", " + 
-					"changedAt=\"" + changedAt + "\", " + 
-					"changedBy=\"" + changedBy + "\";\n";
-			dbc.query(queryStr,
-				// eslint-disable-next-line no-unused-vars
-				(err, info) => {
-					if (err) {
-						logger.info(errors.dbPost, err);
+// 			const queryStr =
+// 				"INSERT INTO dlrg_tla_presence (date, pId, presence, changedAt, changedBy) VALUES (" + 
+// 					"\"" + r.date + "\", " + 
+// 					r.pId + ", " +
+// 					r.presence + ", " +
+// 					"\"" + changedAt + "\", " +
+// 					"\"" + changedBy + "\") " + 
+// 				"ON DUPLICATE KEY UPDATE " + 
+// 					"presence=" + r.presence + ", " + 
+// 					"changedAt=\"" + changedAt + "\", " + 
+// 					"changedBy=\"" + changedBy + "\";\n";
+// 			dbc.query(queryStr,
+// 				// eslint-disable-next-line no-unused-vars
+// 				(err, info) => {
+// 					if (err) {
+// 						logger.info(errors.dbPost, err);
 
-						errorCount = errorCount + 1;
-						if (errorCount + successCount == req.body.length) {
-							if (errorCount == 0) {
-								res.status(200).send({
-									changedBy: changedBy, 
-									changedAt: changedAt 
-								});
-							} else {
-								res.status(500).send({ code: 500, error: errors.dbPost });
-							}
-						}
+// 						errorCount = errorCount + 1;
+// 						if (errorCount + successCount == req.body.length) {
+// 							if (errorCount == 0) {
+// 								res.status(200).send({
+// 									changedBy: changedBy, 
+// 									changedAt: changedAt 
+// 								});
+// 							} else {
+// 								res.status(500).send({ code: 500, error: errors.dbPost });
+// 							}
+// 						}
 	
-					} else {
-						successCount = successCount + 1;
-						if (errorCount + successCount == req.body.length) {
-							if (errorCount == 0) {
-								res.status(200).send({
-									changedBy: changedBy, 
-									changedAt: changedAt 
-								});
-							} else {
-								res.status(500).send({ code: 500, error: errors.dbPost });
-							}
-						}
-					}
-				}
-			);
-		});
-	}
-});
+// 					} else {
+// 						successCount = successCount + 1;
+// 						if (errorCount + successCount == req.body.length) {
+// 							if (errorCount == 0) {
+// 								res.status(200).send({
+// 									changedBy: changedBy, 
+// 									changedAt: changedAt 
+// 								});
+// 							} else {
+// 								res.status(500).send({ code: 500, error: errors.dbPost });
+// 							}
+// 						}
+// 					}
+// 				}
+// 			);
+// 		});
+// 	}
+// });
 
 } // exports

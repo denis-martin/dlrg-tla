@@ -9,7 +9,7 @@ expect.extend(matchers);
 
 const dateTimePattern = '^[0-9]{4}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9]{3}Z$';
 const datePatternRelaxed = '^[0-9]{4}-[0-1][0-9]-[0-3][0-9](T00:00:00.000Z)?$';
-const datePattern = '^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$';
+//const datePattern = '^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$';
 
 let cookie = '';
 

@@ -1,16 +1,16 @@
-var helmet = require('helmet');
-var session = require('client-sessions');
-var express = require('express');
-var cors = require('cors');
-var bodyParser = require('body-parser')
-var logger = require('./logger');
-var config = require('./config.js');
+const helmet = require('helmet');
+const session = require('client-sessions');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser')
+const logger = require('./logger');
+const config = require('./config.js');
 
-var app = express();
+const app = express();
 
 app.use(helmet());
 
-var corsOptions = {
+const corsOptions = {
 	origin: 'http://localhost:4200',
 	credentials: true
 }
