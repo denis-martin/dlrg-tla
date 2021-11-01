@@ -20,7 +20,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angul
 import { timer, Subscription } from 'rxjs';
 
 import { AES, SHA256, enc } from 'crypto-js';
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 
 import * as SchemaParticipant from './schemas/participant.json';
 import * as SchemaRegistration from './schemas/registration.json';
@@ -51,7 +51,7 @@ class TableConnector
 	private isSyncing = false;
 	private autoSync = false;
 	private validate: any;
-	private timerSub: Subscription;
+	private timerSub?: Subscription;
 
 	constructor(private table: string, private schema: any, private refreshRate: number, private ds: DataService) 
 	{
@@ -61,7 +61,6 @@ class TableConnector
 
 	sync(autoSync = false): void 
 	{
-		let self = this;
 		if (this.autoSync && autoSync) {
 			// no action required since autoSync is active
 			console.info("Skipping sync since autoSync is active");
@@ -73,42 +72,42 @@ class TableConnector
 		}
 		this.isSyncing = true;
 		this.ds.http.get(apiBasePath + "api/db/" + this.table, this.ds.httpOptions)
-			.toPromise()
-			.then((response: HttpResponse<Object>) => {
-				console.log("HTTP GET " + apiBasePath + "api/db/" + this.table + " was successful", response);
-				var items: any = response;
+			.subscribe((data: any /*: HttpResponse<Object>*/) => {
+				console.log("HTTP GET " + apiBasePath + "api/db/" + this.table + " was successful", data);
+				const items: Array<any> = data;
 				items.forEach(item => {
-					if (item['id'] in this.ds[this.table]) {
+					if (item['id'] in (this.ds as any)[this.table]) {
 						let remoteChangedAt = new Date(item['changedAt']);
-						let localChangedAt = new Date(this.ds[this.table][item['id']].changedAt);
+						let localChangedAt = new Date((this.ds as any)[this.table][item['id']].changedAt);
 						if (remoteChangedAt > localChangedAt) {
 							console.info("Updating", item);
-							this.ds[this.table][item['id']] = this.unwrap(item);
+							(this.ds as any)[this.table][item['id']] = this.unwrap(item);
 						}
 					} else {
-						this.ds[this.table][item['id']] = this.unwrap(item);
+						(this.ds as any)[this.table][item['id']] = this.unwrap(item);
 					}
 				});
-				console.log(this.ds[this.table]);
-				if (autoSync && !self.autoSync) {
-					self.autoSync = true;
-					self.timerSub = timer(self.refreshRate, self.refreshRate)
-						.subscribe(t => { self.sync(); });
+				console.log((this.ds as any)[this.table]);
+				if (autoSync && !this.autoSync) {
+					this.autoSync = true;
+					this.timerSub = timer(this.refreshRate, this.refreshRate)
+						.subscribe(t => { this.sync(); });
 				}
 				this.isSyncing = false;
-			})
-			.catch((response) => {
-				self.handleError(response);
+			}, (error) => {
+				this.handleError(error);
 				this.isSyncing = false;
 			});
 	}
 
 	stopSync()
 	{
-		this.timerSub.unsubscribe();
+		if (this.timerSub) {
+			this.timerSub.unsubscribe();
+		}
 	}
 
-	private handleError(response): void
+	private handleError(response: any): void
 	{
 		console.error("HTTP request failed", response);
 		if (response.status == 401) {
@@ -118,11 +117,14 @@ class TableConnector
 
 	unwrap(item: any): any
 	{
-		let parsedItem = item;
+		const parsedItem = item;
 		if (item['data_enc']) {
-			parsedItem['data'] = JSON.parse(this.ds.decrypt(item['data_enc']));
+			const dec = this.ds.decrypt(item['data_enc']);
+			if (dec) {
+				parsedItem['data'] = JSON.parse(dec);
+			}
 		}
-		var valid = this.validate(parsedItem);
+		const valid = this.validate(parsedItem);
 		if (!valid) {
 			console.warn("Validation error", parsedItem, this.validate.errors);
 		}
@@ -142,12 +144,12 @@ export class DataService
 		withCredentials: true
 	}
 	
-	private cipherChallenge: string;
+	private cipherChallenge?: string;
 
-	public userName: string = null;
+	public userName?: string;
 	public needLogin = true;
 	public needDataKey = true;
-	public dataKeyHash: string;
+	public dataKeyHash: string | null = null;
 
 	readonly schemas = {
 		participant: SchemaParticipant.default,
@@ -211,47 +213,41 @@ export class DataService
 
 	constructor(public http: HttpClient)
 	{
-		if (!this.dataKeyHash) {
-			this.dataKeyHash = localStorage.getItem("dkh");
-			if (this.dataKeyHash) {
-				this.needDataKey = false;
-			}
+		this.dataKeyHash = localStorage.getItem("dkh");
+		if (this.dataKeyHash) {
+			this.needDataKey = false;
 		}
 		console.info("DataService is alive");
 	}
 
 	isLoggedIn()
 	{
-		return new Promise((resolve, reject) => 
+		return new Promise<void>((resolve, reject) => 
 		{
             this.http.get(apiBasePath + "api/login", this.httpOptions)
-                .toPromise()
-                .then((response: HttpResponse<Object>) => 
-                {
-                    console.info("isLoggedIn(): success", response);
+                .subscribe((data) => {
+                    console.info("isLoggedIn(): success", data);
                     this.needLogin = false;
-                    var body: any = response;
+                    const body: any = data;
                     this.userName = body.user;
                     this.cipherChallenge = body.ciphertest;
                     
-                    if (this.checkCipher(this.cipherChallenge)) {
+                    if (this.cipherChallenge && this.checkCipher(this.cipherChallenge)) {
 						resolve();
 						this.restartSync();
                     } else {
                         reject();
                     }
-                })
-                .catch((response: HttpErrorResponse) => 
-                {
+                }, (error) => {
                     this.needLogin = true;
-                    if (response.status == 401) {
-						console.log("isLoggedIn(): ", response);
-                        var body: any = response.error;
+                    if (error.status == 401) {
+						console.log("isLoggedIn(): ", error);
+                        var body: any = error.error;
                         console.info("isLoggedIn(): need to log in, user:", body.user);
                         this.userName = body.user;
                         reject();
                     } else {
-                        console.error("isLoggedIn(): undefined error", response);
+                        console.error("isLoggedIn(): undefined error", error);
                         reject();
                     }
                 });
@@ -266,7 +262,7 @@ export class DataService
 		if (dataKey) {
             this.setDataKey(dataKey);
 		}
-		return new Promise((resolve, reject) => 
+		return new Promise<void>((resolve, reject) => 
 		{
 			if (this.needLogin || !this.cipherChallenge) {
 				this.http.post(apiBasePath + "api/login", 
@@ -279,7 +275,7 @@ export class DataService
 						this.needLogin = false;
 						this.cipherChallenge = response.ciphertest;
 
-						if (this.checkCipher(this.cipherChallenge)) {
+						if (this.cipherChallenge && this.checkCipher(this.cipherChallenge)) {
 							resolve();
 							this.restartSync();
 						} else {
@@ -312,7 +308,7 @@ export class DataService
 	restartSync()
 	{
 		for (let t in this.tableConnectors) {
-			this.tableConnectors[t].sync(false); // should be switched to true
+			(this.tableConnectors as any)[t].sync(false); // should be switched to true
 		}
 	}
 
@@ -339,25 +335,29 @@ export class DataService
 		return !this.needDataKey;
 	}
 
-	encrypt(plaintext: string): string
+	encrypt(plaintext: string): string | null
 	{
 		// returned ciphertext includes IV and salt
-		var ciphertext = null;
-		try {
-			ciphertext = AES.encrypt(plaintext, this.dataKeyHash).toString();
-		} catch (e) {
-			console.error("Error encrypting text");
+		let ciphertext: string | null = null;
+		if (this.dataKeyHash) {
+			try {
+				ciphertext = AES.encrypt(plaintext, this.dataKeyHash).toString();
+			} catch (e) {
+				console.error("Error encrypting text");
+			}
 		}
 		return ciphertext;
 	}
 	
-	decrypt(ciphertext: string): string
+	decrypt(ciphertext: string): string | null
 	{
-		var plaintext = null;
-		try {
-			plaintext = AES.decrypt(ciphertext, this.dataKeyHash).toString(enc.Utf8);
-		} catch (e) {
-			console.error("Error decrypting text");
+		let plaintext: string | null = null;
+		if (this.dataKeyHash) {
+			try {
+				plaintext = AES.decrypt(ciphertext, this.dataKeyHash).toString(enc.Utf8);
+			} catch (e) {
+				console.error("Error decrypting text");
+			}
 		}
 		return plaintext;
 	}
